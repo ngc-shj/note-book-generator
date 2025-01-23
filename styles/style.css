@@ -1,0 +1,110 @@
+body {
+    counter-reset: section;
+}
+
+h1 {
+    counter-reset: subsection;
+}
+
+/*
+h2 {
+    counter-reset: subsubsection;
+}
+*/
+
+h1::before {
+    counter-increment: section;
+    content: counter(section) ". ";
+}
+
+/*
+h2::before {
+    counter-increment: subsection;
+    content: counter(section) "." counter(subsection) ". ";
+}
+
+h3::before {
+    counter-increment: subsubsection;
+    content: counter(section) "." counter(subsection) "." counter(subsubsection) ". ";
+}
+*/
+
+div.ToC ul {
+  counter-reset: section;
+}
+
+div.ToC li {
+  list-style: none;
+}
+
+div.ToC ul>li:before {
+  counter-increment: section;
+  content: counters(section, '.') '. ';
+}
+
+body {
+    font-size: 11px;
+    line-height: 1;
+    margin: 0;
+}
+
+h1 {
+    font-size: 1.8em;
+}
+
+h2 {
+    font-size: 1.4em;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+p.figure {
+    font-size: 0.9em;
+    font-style: italic;
+    font-weight: bold;
+    text-align: center;
+}
+
+p.source {
+    font-size: 0.9em;
+    font-style: italic;
+    font-weight: bold;
+    text-align: right;
+}
+
+pre>code {
+    /* padding: 0;
+    margin: 0;*/
+    font-size: 0.80em;
+    word-break: normal;
+    white-space: pre-wrap !important;
+    background: transparent;
+    border: 1px solid #ccc;
+}
+
+blockquote {
+    font-size: 0.80em;
+    word-break: normal;
+    white-space: pre-wrap !important;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    max-width: 100%;
+}
+
+@media (min-width: 384px) {
+  img {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    max-width: 30%;
+  }
+}
+
