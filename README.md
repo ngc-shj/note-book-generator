@@ -18,13 +18,13 @@ pip install -r requirements.txt
 ## Usage
 
 1. Export your note.com articles as WXR format
-2. Copy template files:
+2. Copy config/template files:
 
 ```bash
-cp template/cover.html.example cover.html
-cp template/exclude_articles.txt.example exclude_articles.txt
+cp config/exclude_articles.txt.example config/exclude_articles.txt
 cp config/pdf_options.yaml.example config/pdf_options.yaml
-cp config/separator.html.example config/separator.html
+cp templates/cover.html.example templates/cover.html
+cp templates/separator.html.example templates/separator.html
 ```
 
 3. Edit configuration files
@@ -37,9 +37,9 @@ make html # Generate HTML
 
 ## Configuration Files
 
-- `cover.html`: Book cover design
 - `exclude_articles.txt`: List of article numbers to exclude
 - `pdf_options.yaml`: PDF generation options (page size, margins, etc.)
+- `cover.html`: Book cover design
 - `separator.html`: Separator between articles
 
 ## License

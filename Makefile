@@ -8,9 +8,10 @@ OUTPUT_BOOK=note-book
 # Config files
 CONFIG_DIR=config
 EXCLUDE_LIST=$(CONFIG_DIR)/exclude_articles.txt
-SEPARATOR=$(CONFIG_DIR)/separator.html
 PDF_CONFIG=$(CONFIG_DIR)/pdf_options.yaml
-COVER_TEMPLATE=templates/cover.html
+TEMPLATE_DIR=templates
+COVER_TEMPLATE=$(TEMPLATE_DIR)/cover.html
+SEPARATOR=$(TEMPLATE_DIR)/separator.html
 STYLE_CSS=styles/style.css
 
 # Scripts
