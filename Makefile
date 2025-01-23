@@ -1,4 +1,4 @@
-.PHONY: html pdf clean all clean_html clean_pdf
+.PHONY: html pdf clean all
 
 # Input/Output
 INPUT_XML=./export/note-ngc_shj-1.xml
@@ -28,6 +28,7 @@ all: html pdf
 
 # Generated files
 $(ARTICLES_DIR): $(WXR_CONVERTER) $(INPUT_XML)
+	rm -f $(OUTPUT_BOOK).md
 	$(PYTHON) $(WXR_CONVERTER) $(INPUT_XML) $(ARTICLES_DIR)
 
 $(OUTPUT_BOOK).md: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_TEMPLATE) $(SEPARATOR) $(EXCLUDE_LIST)
@@ -39,18 +40,14 @@ $(OUTPUT_BOOK).md: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_TEMPLATE) 
 		--output $@ \
 		$(ARTICLES_DIR)
 
-html: clean_html $(OUTPUT_BOOK).md $(STYLE_CSS)
+html: $(OUTPUT_BOOK).md $(STYLE_CSS)
 	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $(OUTPUT_BOOK).md --as-html
 
-pdf: clean_pdf $(OUTPUT_BOOK).md $(STYLE_CSS)
+pdf: $(OUTPUT_BOOK).md $(STYLE_CSS)
 	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $(OUTPUT_BOOK).md
 
-clean_html:
-	rm -f $(OUTPUT_BOOK).html
-
-clean_pdf:
+clean:
 	rm -f $(OUTPUT_BOOK).pdf
-
-clean: clean_html clean_pdf
+	rm -f $(OUTPUT_BOOK).html
 	rm -rf $(ARTICLES_DIR) $(OUTPUT_BOOK).md
 

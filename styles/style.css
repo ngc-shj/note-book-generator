@@ -6,28 +6,10 @@ h1 {
     counter-reset: subsection;
 }
 
-/*
-h2 {
-    counter-reset: subsubsection;
-}
-*/
-
 h1::before {
     counter-increment: section;
     content: counter(section) ". ";
 }
-
-/*
-h2::before {
-    counter-increment: subsection;
-    content: counter(section) "." counter(subsection) ". ";
-}
-
-h3::before {
-    counter-increment: subsubsection;
-    content: counter(section) "." counter(subsection) "." counter(subsubsection) ". ";
-}
-*/
 
 div.ToC ul {
   counter-reset: section;
@@ -75,8 +57,6 @@ p.source {
 }
 
 pre>code {
-    /* padding: 0;
-    margin: 0;*/
     font-size: 0.80em;
     word-break: normal;
     white-space: pre-wrap !important;

@@ -303,7 +303,13 @@ def bs_node_to_md(node, level=0, base_path=".") -> str:
             raw_code = code_tag.get_text()
             # 言語判定
             lang = detect_code_language(raw_code)
-            return f"\n````{lang}\n{raw_code}\n````\n"
+            #return f"\n````{lang}\n{raw_code}\n````\n"
+            # 行番号を追加
+            numbered_lines = []
+            for i, line in enumerate(raw_code.split('\n'), 1):
+               numbered_lines.append(f"{i:03d} {line}")
+            numbered_code = '\n'.join(numbered_lines)
+            return f"\n````{lang}\n{numbered_code}\n````\n"
         else:
             # <pre> だけの場合もコードブロック
             raw_code = node.get_text()
