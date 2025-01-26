@@ -1,53 +1,80 @@
-.PHONY: html pdf clean all
+# Define phony targets (non-file targets)
+.PHONY: all html pdf clean reflections $(ARTICLES_DIR) $(OUTPUT_MD)
 
-# Input/Output
-INPUT_XML=./export/note-ngc_shj-1.xml
-ARTICLES_DIR=articles
-OUTPUT_BOOK=note-book
+# Project structure
+SRC_DIR     := src
+CONFIG_DIR  := config
+TEMPLATE_DIR:= templates
+INPUT_DIR   := input
+STYLE_DIR   := styles
+ARTICLES_DIR:= articles
+REFLECTIONS_DIR:= reflections
 
-# Config files
-CONFIG_DIR=config
-EXCLUDE_LIST=$(CONFIG_DIR)/exclude_articles.txt
-PDF_CONFIG=$(CONFIG_DIR)/pdf_options.yaml
-TEMPLATE_DIR=templates
-COVER_TEMPLATE=$(TEMPLATE_DIR)/cover.html
-SEPARATOR=$(TEMPLATE_DIR)/separator.html
-STYLE_CSS=styles/style.css
+# Input files
+INPUT_XML   := $(INPUT_DIR)/note-ngc_shj-1.xml
+EXCLUDE_LIST:= $(CONFIG_DIR)/exclude_articles.txt
+INCLUDE_LIST:= $(CONFIG_DIR)/include_articles.txt
+PDF_CONFIG  := $(CONFIG_DIR)/pdf_options.yaml
+COVER_HTML  := $(TEMPLATE_DIR)/cover.html
+SEPARATOR   := $(TEMPLATE_DIR)/separator.html
+STYLE_CSS   := $(STYLE_DIR)/style.css
 
 # Scripts
-SRC_DIR=src
-WXR_CONVERTER=$(SRC_DIR)/wxr_to_md.py
-MD_MERGER=$(SRC_DIR)/merge_md_files.py
+WXR_TO_MD   := $(SRC_DIR)/wxr_to_md.py
+MD_MERGER   := $(SRC_DIR)/merge_md_files.py
+REFLECTION_GENERATOR:= $(SRC_DIR)/generate_reflections.py
 
-# Tools
-MD_TO_PDF=md-to-pdf
-PYTHON=python3
+# Output files
+OUTPUT_NAME := note-book
+OUTPUT_MD   := $(OUTPUT_NAME).md
+OUTPUT_HTML := $(OUTPUT_NAME).html
+OUTPUT_PDF  := $(OUTPUT_NAME).pdf
+
+# Tools and commands
+PYTHON      := python3
+MD_TO_PDF   := md-to-pdf
 
 # Default target
-all: html pdf
+all: $(OUTPUT_MD) html pdf
 
-# Generated files
-$(ARTICLES_DIR): $(WXR_CONVERTER) $(INPUT_XML)
-	rm -f $(OUTPUT_BOOK).md
-	$(PYTHON) $(WXR_CONVERTER) $(INPUT_XML) $(ARTICLES_DIR)
+# Generate markdown files from WXR
+$(ARTICLES_DIR): $(WXR_TO_MD) $(INPUT_XML)
+	rm -f $(OUTPUT_MD)
+	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@
 
-$(OUTPUT_BOOK).md: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_TEMPLATE) $(SEPARATOR) $(EXCLUDE_LIST)
+# Optional reflections generation
+reflections: $(ARTICLES_DIR)/articles.csv
+	$(PYTHON) $(REFLECTION_GENERATOR) $< \
+		--output-dir $(REFLECTIONS_DIR) \
+		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
+		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST))
+
+# Merge markdown files
+$(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARATOR)
 	$(PYTHON) $(MD_MERGER) \
-		--exclude-file $(EXCLUDE_LIST) \
+		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
+		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST)) \
+		$(if $(wildcard $(REFLECTIONS_DIR)),--reflections-dir $(REFLECTIONS_DIR)) \
 		--pdf-options $(PDF_CONFIG) \
-		--cover-design $(COVER_TEMPLATE) \
+		--cover-design $(COVER_HTML) \
 		--separator $(SEPARATOR) \
 		--output $@ \
 		$(ARTICLES_DIR)
 
-html: $(OUTPUT_BOOK).md $(STYLE_CSS)
-	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $(OUTPUT_BOOK).md --as-html
+# Generate HTML
+html: $(OUTPUT_MD) $(STYLE_CSS)
+	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $< --as-html
 
-pdf: $(OUTPUT_BOOK).md $(STYLE_CSS)
-	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $(OUTPUT_BOOK).md
+# Generate PDF
+pdf: $(OUTPUT_MD) $(STYLE_CSS)
+	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $<
 
-clean:
-	rm -f $(OUTPUT_BOOK).pdf
-	rm -f $(OUTPUT_BOOK).html
-	rm -rf $(ARTICLES_DIR) $(OUTPUT_BOOK).md
+# Clean targets
+clean: clean-outputs clean-reflections
 
+clean-outputs:
+	rm -f $(OUTPUT_PDF) $(OUTPUT_HTML)
+	rm -rf $(ARTICLES_DIR) $(OUTPUT_MD)
+
+clean-reflections:
+	rm -rf $(REFLECTIONS_DIR)

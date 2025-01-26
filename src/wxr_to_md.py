@@ -88,7 +88,7 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
     # 記事一覧を出力
     list_path = os.path.join(output_dir, "articles.csv")
     with open(list_path, 'w', encoding='utf-8') as f:
-        f.write("# number,title,filename\n")
+        f.write("number,title,filename\n")
         f.write("\n".join(article_list))
 
 

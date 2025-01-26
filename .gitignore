@@ -171,9 +171,11 @@ cython_debug/
 .pypirc
 
 .DS_Store
-export
-export/
+.vscode/
+input
+input/
 articles/
+reflections/
 note-book.*
 templates/*
 !templates/*.example
