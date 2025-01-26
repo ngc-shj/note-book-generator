@@ -100,11 +100,14 @@ note-book-generator/
 
 **Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
 
-- `exclude_articles.txt`: List of article numbers to exclude
-- `include_articles.txt`: Optional list of specific articles to include
-- Format: One article number per line (refer to `articles/articles.csv` for article numbers)
+Both exclude and include lists are optional:
 
-Example of articles.csv:
+- If neither is specified, all articles will be included in the output
+- `exclude_articles.txt`: Optional list of article numbers to exclude
+- `include_articles.txt`: Optional list of specific articles to include
+- Format: One article number per line
+
+Example of generated articles.csv:
 
 ```csv
 number,title,filename,pub_date
