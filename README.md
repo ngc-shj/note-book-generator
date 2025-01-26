@@ -7,6 +7,7 @@ Convert note.com articles exported in WordPress Extended RSS (WXR) format into P
 - Converts WXR exports to clean Markdown format
 - Generates both PDF and HTML outputs
 - Supports custom book cover and article separators
+- Optional introduction and conclusion sections
 - Optional reflection sections for each article
 - Configurable article inclusion/exclusion
 - Preserves code blocks with syntax highlighting
@@ -56,6 +57,8 @@ This script will:
   - config/pdf_options.yaml
   - templates/cover.html
   - templates/separator.html
+  - templates/introduction.md
+  - templates/conclusion.md
   - templates/reflection.md.template
   - styles/style.css
 
@@ -67,9 +70,14 @@ note-book-generator/
 │   ├── exclude_articles.txt
 │   ├── include_articles.txt
 │   └── pdf_options.yaml
-├── templates/             # HTML templates
+├── styles/                # Stylesheets
+│   └── style.css
+├── templates/             # HTML/Markdown templates
 │   ├── cover.html
-│   └── separator.html
+│   ├── separator.html
+│   ├── introduction.md
+│   ├── conclusion.md
+│   └── reflection.md
 ├── src/                   # Source code
 │   ├── wxr_to_md.py
 │   ├── merge_md_files.py
@@ -99,7 +107,9 @@ Controls PDF output formatting:
 
 - `cover.html`: Custom book cover design
 - `separator.html`: Separator HTML between articles
-- `reflection.md.template`: Template for reflection entries
+- `introduction.md`: Book introduction content
+- `conclusion.md`: Book conclusion content
+- `reflection.md`: Template for reflection entries
 
 ### Styles (`styles/`)
 

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import re
 import argparse
@@ -7,12 +10,14 @@ from typing import List, Optional
 def merge_md_files(
    directory: str,
    output_file: str,
-   exclude_numbers: Optional[List[str]] = None,
    include_numbers: Optional[List[str]] = None,
+   exclude_numbers: Optional[List[str]] = None,
    cover_design: Optional[str] = None,
-   pdf_options: Optional[str] = None,
    separator: Optional[str] = None,
-   reflections_dir: Optional[str] = None
+   introduction: Optional[str] = None,
+   conclusion: Optional[str] = None,
+   reflections_dir: Optional[str] = None,
+   pdf_options: Optional[str] = None
 ) -> None:
     exclude_set = set(f"{int(num):04}" for num in (exclude_numbers or []))
     include_set = set(f"{int(num):04}" for num in (include_numbers or []))
@@ -50,6 +55,14 @@ def merge_md_files(
             else:
                 print(f"Warning: Cover file '{cover_design}' not found. Skipping cover page.\n")
 
+        if introduction:
+            if os.path.exists(introduction):
+                with open(introduction, "r", encoding="utf-8") as f:
+                    output.write(f.read())
+                    output.write(sep)
+            else:
+                print(f"Warning: Introduction file '{introduction}' not found. Skipping introduction.\n")
+
         for md_file in md_files:
             match = re.match(r"^(\d{4})_", md_file)
             if match:
@@ -74,6 +87,14 @@ def merge_md_files(
                             output.write(sep)
                             output.write("\n\n")
 
+        if conclusion:
+            if os.path.exists(conclusion):
+                with open(conclusion, "r", encoding="utf-8") as f:
+                    output.write(sep)
+                    output.write(f.read())
+            else:
+                print(f"Warning: Conclusion file '{conclusion}' not found. Skipping conclusion.\n")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Merge .md files in a directory with optional include/exclude filters.")
@@ -84,14 +105,14 @@ def main():
         help="Output file name for the merged content. Default is 'merged_output.md'."
     )
     parser.add_argument(
-        "--exclude-file", type=str,
-        default=None,
-        help="Path to file containing article numbers to exclude (one per line)"
-    )
-    parser.add_argument(
         "--include-file", type=str,
         default=None,
         help="Path to file containing article numbers to include (one per line)"
+    )
+    parser.add_argument(
+        "--exclude-file", type=str,
+        default=None,
+        help="Path to file containing article numbers to exclude (one per line)"
     )
     parser.add_argument(
         "--cover-design", type=str,
@@ -99,9 +120,14 @@ def main():
         help="Path to the cover file (optional)."
     )
     parser.add_argument(
-        "--pdf-options", type=str,
+        "--introduction", type=str,
         default=None,
-        help="YAML file with PDF options for md-to-pdf"
+        help="Path to introduction markdown file"
+    )
+    parser.add_argument(
+        "--conclusion", type=str,
+        default=None,
+        help="Path to conclusion markdown file"
     )
     parser.add_argument(
         "--separator", type=str,
@@ -113,6 +139,11 @@ def main():
         type=str,
         default=None,
         help="Directory containing reflection markdown files for each article"
+    )
+    parser.add_argument(
+        "--pdf-options", type=str,
+        default=None,
+        help="YAML file with PDF options for md-to-pdf"
     )
 
     args = parser.parse_args()
@@ -130,12 +161,14 @@ def main():
     merge_md_files(
         directory=args.directory, 
         output_file=args.output, 
-        exclude_numbers=exclude_numbers,
         include_numbers=include_numbers,
+        exclude_numbers=exclude_numbers,
         cover_design=args.cover_design,
-        pdf_options=args.pdf_options,
         separator=args.separator,
-        reflections_dir=args.reflections_dir
+        introduction=args.introduction,
+        conclusion=args.conclusion,
+        reflections_dir=args.reflections_dir,
+        pdf_options=args.pdf_options
     )
 
 if __name__ == "__main__":

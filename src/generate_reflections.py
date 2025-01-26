@@ -31,7 +31,7 @@ def generate_reflection_template(
     exclude_numbers = load_article_numbers(exclude_list) if exclude_list else set()
     
     template = read_template(template_path)
-    current_date = datetime.now().strftime("%Y年%m月")
+    current_date = datetime.now().strftime("%Y年%-m月%-d日")
     
     with open(articles_csv, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -66,11 +66,11 @@ def main():
     args = parser.parse_args()
     
     generate_reflection_template(
-        args.articles_csv,
-        args.output_dir,
-        args.template,
-        args.include_file,
-        args.exclude_file
+        articles_csv=args.articles_csv,
+        output_dir=args.output_dir,
+        template_path=args.template,
+        include_list=args.include_file,
+        exclude_list=args.exclude_file
     )
 
 if __name__ == "__main__":

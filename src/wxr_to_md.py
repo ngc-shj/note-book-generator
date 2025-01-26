@@ -6,6 +6,8 @@ import csv
 import re
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
+from datetime import datetime
+from email.utils import parsedate_to_datetime
 
 ################################################################################
 # 1) 既存のコード言語判定・コードブロックエスケープ関数
@@ -61,7 +63,11 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
         content_html = content_elem.text if content_elem is not None else ""
 
         pub_date_elem = item.find('pubDate')
-        pub_date = pub_date_elem.text.strip() if pub_date_elem is not None else "No Date"
+        if pub_date_elem is not None and pub_date_elem.text:
+            dt = parsedate_to_datetime(pub_date_elem.text.strip())
+            pub_date = dt.strftime('%Y年%-m月%-d日 %H:%M')
+        else:
+            pub_date = "No Date"
 
         # ベースパス: WXRファイルと同じディレクトリを起点に処理(例)
         base_path = os.path.dirname(wxr_file)
@@ -75,8 +81,8 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
         out_path = os.path.join(output_dir, filename)
 
         with open(out_path, 'w', encoding='utf-8') as md:
-            md.write(f"# TITLE: {title}\n\n")
-            md.write(f"**Date**: {pub_date}\n\n")
+            md.write(f"# Title: {title}\n\n")
+            md.write(f"**公開日**: {pub_date}\n\n")
             md.write(content_md.strip() + "\n\n")
 
         print(f"Saved: {out_path}")

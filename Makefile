@@ -17,6 +17,8 @@ INCLUDE_LIST:= $(CONFIG_DIR)/include_articles.txt
 PDF_CONFIG  := $(CONFIG_DIR)/pdf_options.yaml
 COVER_HTML  := $(TEMPLATE_DIR)/cover.html
 SEPARATOR   := $(TEMPLATE_DIR)/separator.html
+INTRO_MD    := $(TEMPLATE_DIR)/introduction.md
+OUTRO_MD    := $(TEMPLATE_DIR)/conclusion.md
 REFLECTION_TEMPLATE := $(TEMPLATE_DIR)/reflection.md.template
 STYLE_CSS   := $(STYLE_DIR)/style.css
 
@@ -55,7 +57,7 @@ reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
 	touch $(ARTICLES_DIR)
 
 # Merge markdown files
-$(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARATOR)
+$(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARATOR) $(INTRO_MD) $(OUTRO_MD)
 	$(PYTHON) $(MD_MERGER) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST)) \
@@ -63,6 +65,8 @@ $(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARAT
 		--pdf-options $(PDF_CONFIG) \
 		--cover-design $(COVER_HTML) \
 		--separator $(SEPARATOR) \
+		--introduction $(INTRO_MD) \
+		--conclusion $(OUTRO_MD) \
 		--output $@ \
 		$(ARTICLES_DIR)
 
