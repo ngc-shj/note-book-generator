@@ -16,7 +16,7 @@ Convert note.com articles exported in WordPress Extended RSS (WXR) format into P
 ## Requirements
 
 - Python 3.8+
-- md-to-pdf
+- Node.js 12+ (for md-to-pdf)
 - Required Python packages:
   - bs4 (BeautifulSoup4)
   - PyYAML
@@ -30,21 +30,34 @@ git clone https://github.com/your-username/note-book-generator.git
 cd note-book-generator
 ```
 
-2. Install dependencies:
+2. Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Copy configuration templates:
+3. Install md-to-pdf:
 
 ```bash
-cp config/exclude_articles.txt.example config/exclude_articles.txt
-cp config/pdf_options.yaml.example config/pdf_options.yaml
-cp templates/cover.html.example templates/cover.html
-cp templates/separator.html.example templates/separator.html
-cp templates/reflection.md.template.example templates/reflection.md.template
+npm install -g md-to-pdf
 ```
+
+4. Initialize project structure and copy configuration templates:
+
+```bash
+./init.sh
+```
+
+This script will:
+- Create necessary directories (config, templates, styles, export)
+- Copy example configuration files to their proper locations:
+  - config/exclude_articles.txt
+  - config/include_articles.txt 
+  - config/pdf_options.yaml
+  - templates/cover.html
+  - templates/separator.html
+  - templates/reflection.md.template
+  - styles/style.css
 
 ## Project Structure
 
@@ -86,6 +99,11 @@ Controls PDF output formatting:
 
 - `cover.html`: Custom book cover design
 - `separator.html`: Separator HTML between articles
+- `reflection.md.template`: Template for reflection entries
+
+### Styles (`styles/`)
+
+- `style.css`: Custom CSS styling for HTML/PDF output
 
 ## Usage
 
@@ -118,6 +136,7 @@ make reflections
 ```
 
 2. Edit generated templates in `reflections/` directory
+
 3. Include reflections in final output:
 
 ```bash
@@ -141,4 +160,3 @@ make clean-reflections
 ## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details
-
