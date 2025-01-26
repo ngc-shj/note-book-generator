@@ -56,10 +56,11 @@ npm install -g md-to-pdf
 ```
 
 This script will:
+
 - Create necessary directories (config, templates, styles, export)
 - Copy example configuration files to their proper locations:
   - config/exclude_articles.txt
-  - config/include_articles.txt 
+  - config/include_articles.txt
   - config/pdf_options.yaml
   - templates/cover.html
   - templates/separator.html
@@ -70,7 +71,7 @@ This script will:
 
 ## Project Structure
 
-```
+```text
 note-book-generator/
 ├── config/                 # Configuration files
 │   ├── exclude_articles.txt
@@ -96,6 +97,8 @@ note-book-generator/
 ## Configuration
 
 ### Article Selection (`config/`)
+
+**Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
 
 - `exclude_articles.txt`: List of article numbers to exclude
 - `include_articles.txt`: Optional list of specific articles to include
