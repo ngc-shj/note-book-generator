@@ -77,8 +77,7 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
         with open(out_path, 'w', encoding='utf-8') as md:
             md.write(f"# TITLE: {title}\n\n")
             md.write(f"**Date**: {pub_date}\n\n")
-            md.write(content_md.strip() + "\n")
-            md.write("\n---\n\n")
+            md.write(content_md.strip() + "\n\n")
 
         print(f"Saved: {out_path}")
 

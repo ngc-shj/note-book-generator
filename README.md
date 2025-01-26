@@ -43,6 +43,7 @@ cp config/exclude_articles.txt.example config/exclude_articles.txt
 cp config/pdf_options.yaml.example config/pdf_options.yaml
 cp templates/cover.html.example templates/cover.html
 cp templates/separator.html.example templates/separator.html
+cp templates/reflection.md.template.example templates/reflection.md.template
 ```
 
 ## Project Structure

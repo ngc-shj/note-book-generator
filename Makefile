@@ -1,5 +1,5 @@
 # Define phony targets (non-file targets)
-.PHONY: all html pdf clean reflections $(ARTICLES_DIR) $(OUTPUT_MD)
+.PHONY: all html pdf clean reflections
 
 # Project structure
 SRC_DIR     := src
@@ -17,6 +17,7 @@ INCLUDE_LIST:= $(CONFIG_DIR)/include_articles.txt
 PDF_CONFIG  := $(CONFIG_DIR)/pdf_options.yaml
 COVER_HTML  := $(TEMPLATE_DIR)/cover.html
 SEPARATOR   := $(TEMPLATE_DIR)/separator.html
+REFLECTION_TEMPLATE := $(TEMPLATE_DIR)/reflection.md.template
 STYLE_CSS   := $(STYLE_DIR)/style.css
 
 # Scripts
@@ -40,11 +41,14 @@ all: $(OUTPUT_MD) html pdf
 # Generate markdown files from WXR
 $(ARTICLES_DIR): $(WXR_TO_MD) $(INPUT_XML)
 	rm -f $(OUTPUT_MD)
+	mkdir -p $@
 	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@
+	touch $@
 
 # Optional reflections generation
-reflections: $(ARTICLES_DIR)/articles.csv
+reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
 	$(PYTHON) $(REFLECTION_GENERATOR) $< \
+		--template $(REFLECTION_TEMPLATE) \
 		--output-dir $(REFLECTIONS_DIR) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST))

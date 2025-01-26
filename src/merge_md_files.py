@@ -134,7 +134,8 @@ def main():
         include_numbers=include_numbers,
         cover_design=args.cover_design,
         pdf_options=args.pdf_options,
-        separator=args.separator
+        separator=args.separator,
+        reflections_dir=args.reflections_dir
     )
 
 if __name__ == "__main__":
