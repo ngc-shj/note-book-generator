@@ -4,6 +4,7 @@
 import os
 import csv
 import re
+import argparse
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -334,11 +335,18 @@ def bs_node_to_md(node, level=0, base_path=".") -> str:
         inner_md = "".join(bs_node_to_md(c, level, base_path) for c in node.children)
         return inner_md
 
-def main():
-    import argparse
+def setup_argument_parser():
     parser = argparse.ArgumentParser(description="Convert WXR file to Markdown with code detection & image path fix.")
-    parser.add_argument("wxr_file", help="Path to the WXR file")
-    parser.add_argument("output_dir", help="Output directory for .md files")
+
+    # Required arguments
+    required_group = parser.add_argument_group('required arguments') 
+    required_group.add_argument("wxr_file", help="Path to the WXR file")
+    required_group.add_argument("output_dir", help="Output directory for .md files")
+
+    return parser
+
+def main():
+    parser = setup_argument_parser()
     args = parser.parse_args()
 
     parse_wxr_to_markdown(args.wxr_file, args.output_dir)

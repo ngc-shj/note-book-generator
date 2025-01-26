@@ -95,57 +95,70 @@ def merge_md_files(
             else:
                 print(f"Warning: Conclusion file '{conclusion}' not found. Skipping conclusion.\n")
 
-
-def main():
+def setup_argument_parser():
     parser = argparse.ArgumentParser(description="Merge .md files in a directory with optional include/exclude filters.")
+    
+    # Required arguments
     parser.add_argument("directory", type=str, help="Directory containing .md files to merge.")
-    parser.add_argument(
+    
+    # Output configuration
+    output_group = parser.add_argument_group('output configuration')
+    output_group.add_argument(
         "--output", type=str,
-        default="merged_output.md", 
+        default="merged_output.md",
         help="Output file name for the merged content. Default is 'merged_output.md'."
     )
-    parser.add_argument(
-        "--include-file", type=str,
-        default=None,
-        help="Path to file containing article numbers to include (one per line)"
-    )
-    parser.add_argument(
-        "--exclude-file", type=str,
-        default=None,
-        help="Path to file containing article numbers to exclude (one per line)"
-    )
-    parser.add_argument(
-        "--cover-design", type=str,
-        default=None,
-        help="Path to the cover file (optional)."
-    )
-    parser.add_argument(
-        "--introduction", type=str,
-        default=None,
-        help="Path to introduction markdown file"
-    )
-    parser.add_argument(
-        "--conclusion", type=str,
-        default=None,
-        help="Path to conclusion markdown file"
-    )
-    parser.add_argument(
-        "--separator", type=str,
-        default=None,
-        help="HTML file containing separator between articles",
-    )
-    parser.add_argument(
-        "--reflections-dir",
-        type=str,
-        default=None,
-        help="Directory containing reflection markdown files for each article"
-    )
-    parser.add_argument(
+    output_group.add_argument(
         "--pdf-options", type=str,
         default=None,
         help="YAML file with PDF options for md-to-pdf"
     )
+    
+    # Article filtering
+    filter_group = parser.add_argument_group('article filtering')
+    filter_group.add_argument(
+        "--include-file", type=str,
+        default=None,
+        help="Path to file containing article numbers to include (one per line)"
+    )
+    filter_group.add_argument(
+        "--exclude-file", type=str,
+        default=None,
+        help="Path to file containing article numbers to exclude (one per line)"
+    )
+    
+    # Document structure
+    structure_group = parser.add_argument_group('document structure')
+    structure_group.add_argument(
+        "--cover-design", type=str,
+        default=None,
+        help="Path to the cover file (optional)."
+    )
+    structure_group.add_argument(
+        "--introduction", type=str,
+        default=None,
+        help="Path to introduction markdown file"
+    )
+    structure_group.add_argument(
+        "--conclusion", type=str,
+        default=None,
+        help="Path to conclusion markdown file"
+    )
+    structure_group.add_argument(
+        "--separator", type=str,
+        default=None,
+        help="HTML file containing separator between articles"
+    )
+    structure_group.add_argument(
+        "--reflections-dir", type=str,
+        default=None,
+        help="Directory containing reflection markdown files for each article"
+    )
+    
+    return parser
 
+def main():
+    parser = setup_argument_parser()
     args = parser.parse_args()
 
     exclude_numbers = None

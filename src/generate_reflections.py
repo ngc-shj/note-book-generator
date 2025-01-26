@@ -56,15 +56,38 @@ def generate_reflection_template(
                     )
                     rf.write(content)
 
-def main():
+def setup_argument_parser():
     parser = argparse.ArgumentParser(description="Generate reflection markdown templates from articles.csv")
+   
+    # Required arguments
     parser.add_argument("articles_csv", help="Path to articles.csv")
-    parser.add_argument("--output-dir", default="reflections", help="Output directory for reflection files")
     parser.add_argument("--template", required=True, help="Path to template file")
-    parser.add_argument("--include-file", help="Path to file containing article numbers to include")
-    parser.add_argument("--exclude-file", help="Path to file containing article numbers to exclude")
+   
+    # Output configuration 
+    output_group = parser.add_argument_group('output configuration')
+    output_group.add_argument(
+        "--output-dir", 
+        default="reflections",
+        help="Output directory for reflection files"
+    )
+
+    # Article filtering
+    filter_group = parser.add_argument_group('article filtering')
+    filter_group.add_argument(
+        "--include-file",
+        help="Path to file containing article numbers to include"
+    )
+    filter_group.add_argument(
+        "--exclude-file", 
+        help="Path to file containing article numbers to exclude"
+    )
+
+    return parser
+
+def main():
+    parser = setup_argument_parser()
     args = parser.parse_args()
-    
+
     generate_reflection_template(
         articles_csv=args.articles_csv,
         output_dir=args.output_dir,
