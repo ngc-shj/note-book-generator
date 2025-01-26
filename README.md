@@ -99,11 +99,27 @@ note-book-generator/
 
 - `exclude_articles.txt`: List of article numbers to exclude
 - `include_articles.txt`: Optional list of specific articles to include
-- Format: One article number per line
+- Format: One article number per line (refer to `articles/articles.csv` for article numbers)
+
+Example of articles.csv:
+
+```csv
+number,title,filename,pub_date
+0001,First Article,0001_first-article.md,2024-01-01
+0002,Second Article,0002_second-article.md,2024-01-02
+```
+
+To include only specific articles, list their numbers in `include_articles.txt`:
+
+```text
+1
+2
+```
 
 ### PDF Options (`config/pdf_options.yaml`)
 
 Controls PDF output formatting:
+
 - Page size and margins
 - Header/footer templates
 - Custom styling
