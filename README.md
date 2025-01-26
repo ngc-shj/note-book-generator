@@ -22,6 +22,12 @@ Convert note.com articles exported in WordPress Extended RSS (WXR) format into P
   - bs4 (BeautifulSoup4)
   - PyYAML
 
+**Note**: Before using the generator, edit `Makefile` to set the `INPUT_XML` variable to the path of your WXR export file:
+
+```makefile
+INPUT_XML := $(INPUT_DIR)/your-wxr-export.xml
+```
+
 ## Installation
 
 1. Clone the repository:
