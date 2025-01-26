@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import csv
 import argparse
@@ -28,6 +30,7 @@ def generate_reflection_template(
         for row in reader:
             number = row['number']
             title = row['title']
+            pub_date = row['pub_date']
 
             if include_numbers and number not in include_numbers:
                 continue
@@ -38,6 +41,7 @@ def generate_reflection_template(
             if not os.path.exists(reflection_path):
                 with open(reflection_path, 'w', encoding='utf-8') as rf:
                     current_date = datetime.now().strftime("%Y年%m月")
+                    rf.write(f"**公開日**: {pub_date}\n\n")
                     rf.write(f"## 振り返り ({current_date})\n\n")
                     rf.write(f"「{title}」について：\n\n")
                     rf.write("元記事では[要点]について述べましたが、[新しい視点/現状分析]により、[今日的な意義/課題]が明らかになっています。\n\n")

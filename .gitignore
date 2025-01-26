@@ -176,6 +176,7 @@ input
 input/
 articles/
 reflections/
+reflections.*/
 note-book.*
 templates/*
 !templates/*.example

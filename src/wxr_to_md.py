@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import csv
 import re
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
@@ -82,14 +83,20 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
         print(f"Saved: {out_path}")
 
         # 記事一覧に追加
-        article_list.append(f"{counter:04d},{title},{filename}")
+        article_list.append({
+            'number': f"{counter:04d}",
+            'title': title,
+            'filename': filename,
+            'pub_date': pub_date
+        })
         counter += 1
 
     # 記事一覧を出力
     list_path = os.path.join(output_dir, "articles.csv")
     with open(list_path, 'w', encoding='utf-8') as f:
-        f.write("number,title,filename\n")
-        f.write("\n".join(article_list))
+        writer = csv.DictWriter(f, fieldnames=['number', 'title', 'filename', 'pub_date'])
+        writer.writeheader()
+        writer.writerows(article_list)
 
 
 ################################################################################
