@@ -52,6 +52,7 @@ reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
 		--output-dir $(REFLECTIONS_DIR) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST))
+	touch $(ARTICLES_DIR)
 
 # Merge markdown files
 $(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARATOR)
