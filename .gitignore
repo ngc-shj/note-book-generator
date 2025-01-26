@@ -170,15 +170,29 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# macOS system files
 .DS_Store
+
+# VS Code settings
 .vscode/
+
+# Input files and generated content
 input
 input/
 articles/
 reflections/
 reflections.*/
 note-book.*
-templates/*
-!templates/*.example
+
+# Config files except examples
 config/*
 !config/*.example
+
+# Templates except examples 
+templates/*
+!templates/*.example
+
+# Styles except examples
+styles/*
+!styles/*.example
+

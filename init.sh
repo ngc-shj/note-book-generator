@@ -8,6 +8,7 @@ for example in \
     config/exclude_articles.txt.example \
     config/include_articles.txt.example \
     config/pdf_options.yaml.example \
+    styles/style.css.example \
     templates/cover.html.example \
     templates/separator.html.example \
     templates/reflection.md.template.example
