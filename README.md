@@ -77,7 +77,7 @@ note-book-generator/
 │   ├── separator.html
 │   ├── introduction.md
 │   ├── conclusion.md
-│   └── reflection.md
+│   └── reflection.md.template
 ├── src/                   # Source code
 │   ├── wxr_to_md.py
 │   ├── merge_md_files.py
@@ -109,7 +109,7 @@ Controls PDF output formatting:
 - `separator.html`: Separator HTML between articles
 - `introduction.md`: Book introduction content
 - `conclusion.md`: Book conclusion content
-- `reflection.md`: Template for reflection entries
+- `reflection.md.template`: Template for reflection entries
 
 ### Styles (`styles/`)
 
