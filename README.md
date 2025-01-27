@@ -62,8 +62,8 @@ This script will:
   - config/exclude_articles.txt
   - config/include_articles.txt
   - config/pdf_options.yaml
-  - templates/cover.html
-  - templates/separator.html
+  - templates/cover.md
+  - templates/separator.md
   - templates/introduction.md
   - templates/conclusion.md
   - templates/reflection.md.template
@@ -79,9 +79,9 @@ note-book-generator/
 │   └── pdf_options.yaml
 ├── styles/                # Stylesheets
 │   └── style.css
-├── templates/             # HTML/Markdown templates
-│   ├── cover.html
-│   ├── separator.html
+├── templates/             # Markdown templates
+│   ├── cover.md
+│   ├── separator.md
 │   ├── introduction.md
 │   ├── conclusion.md
 │   └── reflection.md.template
@@ -133,8 +133,8 @@ Controls PDF output formatting:
 
 ### Templates (`templates/`)
 
-- `cover.html`: Custom book cover design
-- `separator.html`: Separator HTML between articles
+- `cover.md`: Custom book cover design
+- `separator.md`: Separator HTML between articles
 - `introduction.md`: Book introduction content
 - `conclusion.md`: Book conclusion content
 - `reflection.md.template`: Template for reflection entries

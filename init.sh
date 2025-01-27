@@ -9,10 +9,10 @@ for example in \
     config/include_articles.txt.example \
     config/pdf_options.yaml.example \
     styles/style.css.example \
-    templates/cover.html.example \
+    templates/cover.md.example \
     templates/introduction.md.example \
     templates/conclusion.md.example \
-    templates/separator.html.example \
+    templates/separator.md.example \
     templates/reflection.md.template.example
 do
     target="${example%.example}"
