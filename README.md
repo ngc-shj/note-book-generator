@@ -30,21 +30,6 @@ INPUT_XML := $(INPUT_DIR)/your-wxr-export.xml
 
 ## Installation
 
-### Preparing note.com Export
-
-1. From note.com, export your articles in WordPress Extended RSS (WXR) format
-2. Extract the downloaded zip file (format: `[hash]_1.zip`)
-3. Move the contents to the `input` directory:
-
-   ```bash
-   mv note-ngc_shj-1.xml input/
-   mv assets input/
-   ```
-
-The `assets` directory contains your article images and media files.
-
-### Setup
-
 1. Clone the repository:
 
 ```bash
@@ -83,6 +68,18 @@ This script will:
   - templates/conclusion.md
   - templates/reflection.md.template
   - styles/style.css
+
+5. Place note.com export files:
+   - From note.com, export your articles in WordPress Extended RSS (WXR) format
+   - Extract downloaded zip file (format: `[hash]_1.zip`)
+   - Move contents to the `input` directory:
+
+     ```bash
+     mv note-ngc_shj-1.xml input/
+     mv assets input/
+     ```
+
+   The `assets` directory contains your article images and media files.
 
 ## Project Structure
 
