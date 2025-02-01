@@ -82,7 +82,7 @@ def merge_md_files(
                                     output.write("\n\n")
                                     output.write(ref_file.read())
 
-                        if input_file != md_files[-1]:
+                        if md_file != md_files[-1]:
                             output.write("\n\n")
                             output.write(sep)
                             output.write("\n\n")
