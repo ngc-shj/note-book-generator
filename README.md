@@ -115,20 +115,31 @@ note-book-generator/
 
 **Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
 
+#### `articles.csv` Format
+
+After `make` is executed, `articles.csv` is generated with the following format:
+
+```csv
+number,link,pub_date,status,title,filename
+0000,https://note.com/ngc_shj,"Sat, 01 Feb 2025 09:18:23 +0900",info,サイト情報,0000_Channel_Info.md
+0001,https://note.com/ngc_shj/n/n75900dd12eb4,2023年9月13日 00:37,publish,noteはじめる,0001_noteはじめる.md
+```
+
+- `number`: Unique article number
+- `link`: Original article URL
+- `pub_date`: Publication date
+- `status`: Publication status (`publish`, `draft`, etc.)
+- `title`: Article title
+- `filename`: Corresponding Markdown file
+
+#### Article Filtering
+
 Both exclude and include lists are optional:
 
 - If neither is specified, all articles will be included in the output
 - `exclude_articles.txt`: Optional list of article numbers to exclude
 - `include_articles.txt`: Optional list of specific articles to include
 - Format: One article number per line
-
-Example of generated articles.csv:
-
-```csv
-number,title,filename,pub_date
-0001,First Article,0001_first-article.md,2024-01-01
-0002,Second Article,0002_second-article.md,2024-01-02
-```
 
 To include only specific articles, list their numbers in `include_articles.txt`:
 
