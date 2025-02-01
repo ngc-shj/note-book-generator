@@ -37,24 +37,70 @@ def detect_code_language(code_content: str) -> str:
 # 2) Main: WXR解析 → BeautifulSoupでHTML→Markdown変換
 ################################################################################
 
-def parse_wxr_to_markdown(wxr_file, output_dir):
+def parse_wxr_to_markdown(wxr_file, output_dir, allowed_statuses):
     """WXRファイルを読み込み、各<item>のcontentをMarkdown変換して保存"""
     os.makedirs(output_dir, exist_ok=True)
     tree = ET.parse(wxr_file)
     root = tree.getroot()
+
+    channel = root.find("channel")  # <channel> タグを取得
+
+    # `<channel>` がない場合は処理を中断
+    if channel is None:
+        print("Error: <channel> タグが見つかりません。処理を終了します。")
+        return
 
     # WordPressエクスポートで使用される名前空間
     namespace = {'content': 'http://purl.org/rss/1.0/modules/content/'}
 
     # 記事一覧ファイル用
     article_list = []
-    counter = 1
 
-    # 各<item>を走査
-    for item in root.findall(".//item"):
-        # 公開記事のみ
-        status = item.find('./{http://wordpress.org/export/1.2/}status')
-        if status is not None and status.text.strip() != "publish":
+    # (1) <channel> の情報を記事 0000 として保存
+    title = channel.findtext("title", "No Title").strip()
+    link = channel.findtext("link", "No Link").strip()
+    description = channel.findtext("description", "").strip()
+    pub_date = channel.findtext("pubDate", "No Date").strip()
+    base_site_url = channel.findtext("{http://wordpress.org/export/1.2/}base_site_url", "No Base URL").strip()
+
+    # 著者情報を取得
+    author_elem = channel.find("{http://wordpress.org/export/1.2/}author")
+    author_name = author_elem.findtext("{http://wordpress.org/export/1.2/}author_display_name", "Unknown Author").strip() if author_elem is not None else "Unknown Author"
+
+    # Markdown ファイルとして保存
+    filename = "0000_Channel_Info.md"
+    out_path = os.path.join(output_dir, filename)
+
+    with open(out_path, 'w', encoding='utf-8') as md:
+        md.write(f"# サイト情報\n\n")
+        md.write(f"**タイトル**: {title}\n\n")
+        md.write(f"**リンク**: {link}\n\n")
+        md.write(f"**説明**: {description}\n\n")
+        md.write(f"**エクスポート日時**: {pub_date}\n\n")
+        md.write(f"**基本サイト URL**: {base_site_url}\n\n")
+        md.write(f"**著者**: {author_name}\n\n")
+
+    print(f"Saved: {out_path}")
+
+    # 記事一覧に追加
+    article_list.append({
+        'number': "0000",
+        'title': "サイト情報",
+        'filename': filename,
+        'pub_date': pub_date,
+        'link': link,
+        'status': "info"
+    })
+
+    # (2) 各 <item> タグの記事を処理 (channel 内の item も含む)
+    counter = 1
+    for item in channel.findall("item"):
+        # 記事の公開ステータスを取得
+        status_elem = item.find('./{http://wordpress.org/export/1.2/}status')
+        status = status_elem.text.strip() if status_elem is not None else "unknown"
+
+        # 指定されたステータスのものだけ処理
+        if status not in allowed_statuses:
             continue
 
         title_elem = item.find('title')
@@ -69,6 +115,9 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
             pub_date = dt.strftime('%Y年%-m月%-d日 %H:%M')
         else:
             pub_date = "No Date"
+
+        link_elem = item.find('link')
+        link = link_elem.text.strip() if link_elem is not None else "No Link"
 
         # ベースパス: WXRファイルと同じディレクトリを起点に処理(例)
         base_path = os.path.dirname(wxr_file)
@@ -91,16 +140,18 @@ def parse_wxr_to_markdown(wxr_file, output_dir):
         # 記事一覧に追加
         article_list.append({
             'number': f"{counter:04d}",
+            'link': link,
+            'pub_date': pub_date,
+            'status': status,
             'title': title,
             'filename': filename,
-            'pub_date': pub_date
         })
         counter += 1
 
     # 記事一覧を出力
     list_path = os.path.join(output_dir, "articles.csv")
     with open(list_path, 'w', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=['number', 'title', 'filename', 'pub_date'])
+        writer = csv.DictWriter(f, fieldnames=['number', 'link', 'pub_date', 'status', 'title', 'filename'])
         writer.writeheader()
         writer.writerows(article_list)
 
@@ -343,13 +394,22 @@ def setup_argument_parser():
     required_group.add_argument("wxr_file", help="Path to the WXR file")
     required_group.add_argument("output_dir", help="Output directory for .md files")
 
+    parser.add_argument(
+        "--status",
+        default="publish",
+        help="Comma-separated list of post statuses to include (default: publish)"
+    )
+
     return parser
 
 def main():
     parser = setup_argument_parser()
     args = parser.parse_args()
 
-    parse_wxr_to_markdown(args.wxr_file, args.output_dir)
+    # ステータスをカンマ区切りでリスト化
+    allowed_statuses = {status.strip() for status in args.status.split(",")}
+
+    parse_wxr_to_markdown(args.wxr_file, args.output_dir, allowed_statuses)
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 # note-book-generator
 
-Convert note.com articles exported in WordPress Extended RSS (WXR) format into PDF/HTML books with customizable formatting and reflections.
+Convert note.com articles exported in WordPress Extended RSS (WXR) format into PDF/HTML books with customizable formatting, reflections, and QR codes.
 
 ## Features
 
@@ -13,6 +13,7 @@ Convert note.com articles exported in WordPress Extended RSS (WXR) format into P
 - Preserves code blocks with syntax highlighting
 - Maintains image references and captions
 - Customizable PDF formatting (page size, margins, headers/footers)
+- Generates QR codes for article URLs
 
 ## Requirements
 
@@ -57,17 +58,17 @@ npm install -g md-to-pdf
 
 This script will:
 
-- Create necessary directories (config, templates, styles, export)
+- Create necessary directories (`config`, `templates`, `styles`, `input`, `qrcodes`)
 - Copy example configuration files to their proper locations:
-  - config/exclude_articles.txt
-  - config/include_articles.txt
-  - config/pdf_options.yaml
-  - templates/cover.md
-  - templates/separator.md
-  - templates/introduction.md
-  - templates/conclusion.md
-  - templates/reflection.md.template
-  - styles/style.css
+  - `config/exclude_articles.txt`
+  - `config/include_articles.txt`
+  - `config/pdf_options.yaml`
+  - `templates/cover.md`
+  - `templates/separator.md`
+  - `templates/introduction.md`
+  - `templates/conclusion.md`
+  - `templates/reflection.md.template`
+  - `styles/style.css`
 
 5. Place note.com export files:
    - From note.com, export your articles in WordPress Extended RSS (WXR) format
@@ -100,9 +101,11 @@ note-book-generator/
 ├── src/                   # Source code
 │   ├── wxr_to_md.py
 │   ├── merge_md_files.py
-│   └── generate_reflections.py
+│   ├── generate_reflections.py
+│   ├── generate_qr_codes.py
 ├── articles/             # Generated article files
 ├── reflections/         # Generated reflection templates
+├── qrcodes/             # Generated QR codes
 └── input/               # Input files (note.com WXR exports)
 ```
 
@@ -175,6 +178,31 @@ Generate both formats:
 
 ```bash
 make all
+```
+
+### Generating QR Codes
+
+To generate QR codes for all articles:
+
+```bash
+make qr
+```
+
+QR codes will be saved in the `qrcodes/` directory. Each file corresponds to an article's assigned filename.
+
+### Filtering Articles by Status
+
+By default, only **publish** articles are processed (`FILTER_STATUS=publish`).  
+To include **draft** articles, run:
+
+```bash
+make FILTER_STATUS=draft wxr_to_md
+```
+
+To include both **publish** and **draft** articles:
+
+```bash
+make FILTER_STATUS="publish,draft" wxr_to_md
 ```
 
 ### Working with Reflections

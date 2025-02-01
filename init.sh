@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create directories
-mkdir -p config templates styles export
+mkdir -p input config templates styles qrcodes
 
 # Copy example files if they don't exist
 for example in \

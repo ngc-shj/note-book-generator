@@ -1,5 +1,5 @@
 # Define phony targets (non-file targets)
-.PHONY: all html pdf clean reflections
+.PHONY: all html pdf clean reflections qr
 
 # Project structure
 SRC_DIR     := src
@@ -8,6 +8,7 @@ TEMPLATE_DIR:= templates
 INPUT_DIR   := input
 STYLE_DIR   := styles
 ARTICLES_DIR:= articles
+QR_DIR      := qrcodes
 REFLECTIONS_DIR:= reflections
 
 # Input files
@@ -26,6 +27,7 @@ STYLE_CSS   := $(STYLE_DIR)/style.css
 WXR_TO_MD   := $(SRC_DIR)/wxr_to_md.py
 MD_MERGER   := $(SRC_DIR)/merge_md_files.py
 REFLECTION_GENERATOR:= $(SRC_DIR)/generate_reflections.py
+QR_GENERATOR := $(SRC_DIR)/generate_qr_codes.py
 
 # Output files
 OUTPUT_NAME := note-book
@@ -37,15 +39,23 @@ OUTPUT_PDF  := $(OUTPUT_NAME).pdf
 PYTHON      := python3
 MD_TO_PDF   := md-to-pdf
 
+# Default status (set to public)
+FILTER_STATUS := publish
+
 # Default target
-all: $(OUTPUT_MD) html pdf
+all: $(OUTPUT_MD) html pdf qr
 
 # Generate markdown files from WXR
 $(ARTICLES_DIR): $(WXR_TO_MD) $(INPUT_XML)
 	rm -f $(OUTPUT_MD)
 	mkdir -p $@
-	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@
+	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@ --status=$(FILTER_STATUS)
 	touch $@
+
+# Generate QR codes
+qr: $(ARTICLES_DIR)/articles.csv
+	@mkdir -p $(QR_DIR)
+	$(PYTHON) $(QR_GENERATOR) --csv=$< --output-dir=$(QR_DIR)
 
 # Optional reflections generation
 reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
@@ -83,7 +93,7 @@ clean: clean-outputs clean-reflections
 
 clean-outputs:
 	rm -f $(OUTPUT_PDF) $(OUTPUT_HTML)
-	rm -rf $(ARTICLES_DIR) $(OUTPUT_MD)
+	rm -rf $(ARTICLES_DIR) $(OUTPUT_MD) $(QR_DIR)
 
 clean-reflections:
 	rm -rf $(REFLECTIONS_DIR)

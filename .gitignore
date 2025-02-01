@@ -183,6 +183,7 @@ articles/
 reflections/
 reflections.*/
 note-book.*
+qrcodes/
 
 # Config files except examples
 config/*
