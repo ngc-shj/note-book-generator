@@ -1,40 +1,17 @@
----
-pdf_options:
-  format: A5
-  margin: 5mm 5mm 5mm 5mm
-  displayHeaderFooter: true
-  stylesheet: https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css
-  body_class: markdown-body
-  headerTemplate: |-
-    <style>
-      section {
-        margin: 0 auto;
-        font-family: system-ui;
-        font-size: 8px;
-      }
-    </style>
-    <section>
-      <span class="title"></span>
-    </section>
-  footerTemplate: |-
-    <section>
-      <div>
-        Page <span class="pageNumber"></span>
-        of <span class="totalPages"></span>
-      </div>
-    </section>
----
+<div class="cover-container">
 
-<div style="text-align: center;">
-<div style="font-size: 48px; line-height: 1.2em; padding: 300px 0;">
-TITLE
+<div class="cover-title">
+たいとる
 </div>
-<div style="font-size: 16px; line-height: 1.2em; margin: 100px auto;">
-Sub Title
+
+<div class="cover-subtitle">
+サブタイトル
 </div>
-<div style="font-size: 24px; font-weight: bold; line-height: 150%; margin: 100px auto;">
-Author
+
+<div class="cover-author">
+著者名
 </div>
+
 </div>
+
 <div style="page-break-before: always;"></div>
-

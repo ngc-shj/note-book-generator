@@ -1,5 +1,5 @@
 # Define phony targets (non-file targets)
-.PHONY: all html pdf clean reflections qr
+.PHONY: all html pdf clean reflections qr merge
 
 # Project structure
 SRC_DIR     := src
@@ -17,6 +17,7 @@ EXCLUDE_LIST:= $(CONFIG_DIR)/exclude_articles.txt
 INCLUDE_LIST:= $(CONFIG_DIR)/include_articles.txt
 PDF_CONFIG  := $(CONFIG_DIR)/pdf_options.yaml
 COVER_HTML  := $(TEMPLATE_DIR)/cover.md
+BACK_COVER_HTML  := $(TEMPLATE_DIR)/back_cover.md
 SEPARATOR   := $(TEMPLATE_DIR)/separator.md
 INTRO_MD    := $(TEMPLATE_DIR)/introduction.md
 OUTRO_MD    := $(TEMPLATE_DIR)/conclusion.md
@@ -43,19 +44,20 @@ MD_TO_PDF   := md-to-pdf
 FILTER_STATUS := publish
 
 # Default target
-all: $(OUTPUT_MD) html pdf qr
+all: $(ARTICLES_DIR) qr merge html pdf 
 
 # Generate markdown files from WXR
 $(ARTICLES_DIR): $(WXR_TO_MD) $(INPUT_XML)
 	rm -f $(OUTPUT_MD)
 	mkdir -p $@
-	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@ --status=$(FILTER_STATUS)
+	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@ --status $(FILTER_STATUS)
 	touch $@
 
 # Generate QR codes
 qr: $(ARTICLES_DIR)/articles.csv
 	@mkdir -p $(QR_DIR)
-	$(PYTHON) $(QR_GENERATOR) --csv=$< --output-dir=$(QR_DIR)
+	$(PYTHON) $(QR_GENERATOR) --csv $< --output-dir $(QR_DIR)
+	touch $(QR_DIR)
 
 # Optional reflections generation
 reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
@@ -67,17 +69,18 @@ reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
 	touch $(ARTICLES_DIR)
 
 # Merge markdown files
-$(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(SEPARATOR) $(INTRO_MD) $(OUTRO_MD)
+merge: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(BACK_COVER_HTML) $(SEPARATOR) $(INTRO_MD) $(OUTRO_MD)
 	$(PYTHON) $(MD_MERGER) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST)) \
 		$(if $(wildcard $(REFLECTIONS_DIR)),--reflections-dir $(REFLECTIONS_DIR)) \
 		--pdf-options $(PDF_CONFIG) \
 		--cover-design $(COVER_HTML) \
+		--back-cover-design $(BACK_COVER_HTML) \
 		--separator $(SEPARATOR) \
 		--introduction $(INTRO_MD) \
 		--conclusion $(OUTRO_MD) \
-		--output $@ \
+		--output $(OUTPUT_MD) \
 		$(ARTICLES_DIR)
 
 # Generate HTML

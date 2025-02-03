@@ -180,10 +180,12 @@ cython_debug/
 input
 input/
 articles/
+articles.*/
 reflections/
 reflections.*/
 note-book.*
 qrcodes/
+images/
 
 # Config files except examples
 config/*

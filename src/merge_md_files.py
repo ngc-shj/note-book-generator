@@ -10,9 +10,11 @@ from typing import List, Optional
 def merge_md_files(
    directory: str,
    output_file: str,
+   qr_dir: Optional[str] = None,
    include_numbers: Optional[List[str]] = None,
    exclude_numbers: Optional[List[str]] = None,
    cover_design: Optional[str] = None,
+   back_cover_design: Optional[str] = None,
    separator: Optional[str] = None,
    introduction: Optional[str] = None,
    conclusion: Optional[str] = None,
@@ -73,27 +75,44 @@ def merge_md_files(
                 if should_include and not should_exclude:
                     file_path = os.path.join(directory, md_file)
                     with open(file_path, "r", encoding="utf-8") as input_file:
-                        output.write(input_file.read())
+                        content = input_file.read()
 
-                        if reflections_dir:
-                            reflection_path = os.path.join(reflections_dir, f"{article_number}_reflection.md")
-                            if os.path.exists(reflection_path):
-                                with open(reflection_path, "r", encoding="utf-8") as ref_file:
-                                    output.write("\n\n")
-                                    output.write(ref_file.read())
+                    if qr_dir:
+                        qr_code_path = os.path.join(qr_dir, f"{md_file.replace('.md', '.png')}")
+                        if qr_dir and os.path.exists(qr_code_path):
+                            qr_code_md = f"\n![]({qr_code_path})\n"
+                            content = content.replace("**公開日**:", qr_code_md + "**公開日**:", 1)
 
-                        if md_file != md_files[-1]:
-                            output.write("\n\n")
-                            output.write(sep)
-                            output.write("\n\n")
+                    output.write(content)
+
+                    if reflections_dir:
+                        reflection_path = os.path.join(reflections_dir, f"{article_number}_reflection.md")
+                        if os.path.exists(reflection_path):
+                            with open(reflection_path, "r", encoding="utf-8") as ref_file:
+                                output.write("\n\n")
+                                output.write(ref_file.read())
+
+                    if md_file != md_files[-1]:
+                        output.write("\n\n")
+                        output.write(sep)
+                        output.write("\n\n")
 
         if conclusion:
             if os.path.exists(conclusion):
                 with open(conclusion, "r", encoding="utf-8") as f:
                     output.write(sep)
                     output.write(f.read())
+                    output.write("\n\n")
             else:
                 print(f"Warning: Conclusion file '{conclusion}' not found. Skipping conclusion.\n")
+
+        if back_cover_design:
+            if os.path.exists(back_cover_design):
+                with open(back_cover_design, "r", encoding="utf-8") as f:
+                    output.write(sep)
+                    output.write(f.read())
+            else:
+                print(f"Warning: Cover file '{back_cover_design}' not found. Skipping back cover page.\n")
 
 def setup_argument_parser():
     parser = argparse.ArgumentParser(description="Merge .md files in a directory with optional include/exclude filters.")
@@ -135,6 +154,11 @@ def setup_argument_parser():
         help="Path to the cover file (optional)."
     )
     structure_group.add_argument(
+        "--back-cover-design", type=str,
+        default=None,
+        help="Path to the back cover file (optional)."
+    )
+    structure_group.add_argument(
         "--introduction", type=str,
         default=None,
         help="Path to introduction markdown file"
@@ -154,6 +178,11 @@ def setup_argument_parser():
         default=None,
         help="Directory containing reflection markdown files for each article"
     )
+    structure_group.add_argument(
+        "--qr-dir", type=str,
+        default=None,
+        help="Directory containing QR code images"
+    )
     
     return parser
 
@@ -172,11 +201,13 @@ def main():
             include_numbers = [line.strip() for line in f if line.strip()]
 
     merge_md_files(
-        directory=args.directory, 
-        output_file=args.output, 
+        directory=args.directory,
+        output_file=args.output,
+        qr_dir=args.qr_dir,
         include_numbers=include_numbers,
         exclude_numbers=exclude_numbers,
         cover_design=args.cover_design,
+        back_cover_design=args.back_cover_design,
         separator=args.separator,
         introduction=args.introduction,
         conclusion=args.conclusion,

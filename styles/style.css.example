@@ -1,14 +1,13 @@
 body {
+    font-size: 10pt;
+    line-height: 1.1;
+    margin: 0;
     counter-reset: section;
-}
-
-h1 {
-    counter-reset: subsection;
 }
 
 h1::before {
     counter-increment: section;
-    content: counter(section) ". ";
+    content: "[" counter(section) "] ";
 }
 
 div.ToC ul {
@@ -24,14 +23,9 @@ div.ToC ul>li:before {
   content: counters(section, '.') '. ';
 }
 
-body {
-    font-size: 11px;
-    line-height: 1;
-    margin: 0;
-}
-
+/* 基本スタイル */
 h1 {
-    font-size: 1.8em;
+    font-size: 1.6em;
 }
 
 h2 {
@@ -43,35 +37,51 @@ h3 {
 }
 
 p.figure {
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-style: italic;
     font-weight: bold;
     text-align: center;
 }
 
 p.source {
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-style: italic;
     font-weight: bold;
     text-align: right;
 }
 
+blockquote {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 4px 6px;
+    font-size: 0.8em;
+    word-break: normal;
+    white-space: pre-wrap !important;
+    background-color: #f5f5f5;
+    border: 2px solid #ccc;
+}
+
+blockquote p {
+    margin: 0px;
+    padding: 0px;
+}
+
+/* コードブロック */
 pre>code {
-    font-size: 0.80em;
+    font-size: 0.8em;
     word-break: normal;
     white-space: pre-wrap !important;
     background: transparent;
     border: 1px solid #ccc;
 }
 
-blockquote {
-    font-size: 0.80em;
-    word-break: normal;
-    white-space: pre-wrap !important;
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
+/* リンク */
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
+/* 画像 */
 img {
     display: block;
     margin: 0 auto;
@@ -79,12 +89,110 @@ img {
     max-width: 100%;
 }
 
-@media (min-width: 384px) {
+@media (min-width: 320px) {
   img {
     display: block;
     margin: 0 auto;
     width: auto;
-    max-width: 30%;
+    max-width: 40%;
   }
 }
 
+/* 表紙用スタイル */
+.cover-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.cover-title {
+    font-size: 4.0em;
+    line-height: 1.2em;
+    padding: 64px 0;
+    font-weight: bold;
+}
+
+.cover-subtitle {
+    font-size: 1.6em;
+    line-height: 1.2em;
+    padding: 32px 0;
+}
+
+.cover-author {
+    font-size: 1.8em;
+    font-weight: bold;
+    padding: 32px 0;
+}
+
+.cover-container img {
+    all: unset;
+    margin: 0 auto;
+    width: auto;
+    max-width: 75%;
+    display: block;
+}
+
+/* 裏表紙用スタイル */
+.back-cover-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100vh;
+}
+
+.back-cover-message {
+    text-align: left;
+    font-size: 2.0em;
+    font-weight: bold;
+    padding: 32px 0;
+}
+
+/* はじめに、あとがき用スタイル */
+.introduction-container,
+.conclusion-container {
+    font-size: 1.1em;
+    font-weight: normal;
+    text-align: justify;
+    line-height: 1.6;
+}
+
+/* あとがき用スタイル */
+.conclusion-images {
+    all: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.conclusion-images img {
+    all: unset;
+    max-width: 80%;
+    height: auto;
+}
+
+/* PDF用 */
+@page {
+    margin-top: 12mm;
+    margin-bottom: 12mm;
+}
+
+@page:first {
+    margin-left: 12mm;
+    margin-right: 12mm;
+}
+
+@page :left {
+    margin-left: 10mm;
+    margin-right: 15mm;
+}
+  
+@page :right {
+    margin-left: 15mm;
+    margin-right: 10mm;
+}

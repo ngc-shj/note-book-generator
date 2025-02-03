@@ -22,6 +22,9 @@ Convert note.com articles exported in WordPress Extended RSS (WXR) format into P
 - Required Python packages:
   - bs4 (BeautifulSoup4)
   - PyYAML
+  - qrcode
+  - pandas
+  - pillow
 
 **Note**: Before using the generator, edit `Makefile` to set the `INPUT_XML` variable to the path of your WXR export file:
 
@@ -64,9 +67,10 @@ This script will:
   - `config/include_articles.txt`
   - `config/pdf_options.yaml`
   - `templates/cover.md`
-  - `templates/separator.md`
+  - `templates/back_cover.md`
   - `templates/introduction.md`
   - `templates/conclusion.md`
+  - `templates/separator.md`
   - `templates/reflection.md.template`
   - `styles/style.css`
 
@@ -90,14 +94,15 @@ note-book-generator/
 │   ├── exclude_articles.txt
 │   ├── include_articles.txt
 │   └── pdf_options.yaml
+├── templates/             # Markdown templates
+│   ├── cover.md          # Book front cover
+│   ├── back_cover.md     # Book back cover
+│   ├── introduction.md   # Introduction chapter
+│   ├── conclusion.md     # Conclusion chapter
+│   ├── separator.md      # Separator between articles
+│   └── reflection.md.template
 ├── styles/                # Stylesheets
 │   └── style.css
-├── templates/             # Markdown templates
-│   ├── cover.md
-│   ├── separator.md
-│   ├── introduction.md
-│   ├── conclusion.md
-│   └── reflection.md.template
 ├── src/                   # Source code
 │   ├── wxr_to_md.py
 │   ├── merge_md_files.py
@@ -112,27 +117,6 @@ note-book-generator/
 ## Configuration
 
 ### Article Selection (`config/`)
-
-**Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
-
-#### `articles.csv` Format
-
-After `make` is executed, `articles.csv` is generated with the following format:
-
-```csv
-number,link,pub_date,status,title,filename
-0000,https://note.com/ngc_shj,"Sat, 01 Feb 2025 09:18:23 +0900",info,サイト情報,0000_Channel_Info.md
-0001,https://note.com/ngc_shj/n/n75900dd12eb4,2023年9月13日 00:37,publish,noteはじめる,0001_noteはじめる.md
-```
-
-- `number`: Unique article number
-- `link`: Original article URL
-- `pub_date`: Publication date
-- `status`: Publication status (`publish`, `draft`, etc.)
-- `title`: Article title
-- `filename`: Corresponding Markdown file
-
-#### Article Filtering
 
 Both exclude and include lists are optional:
 
@@ -159,19 +143,71 @@ Controls PDF output formatting:
 
 ### Templates (`templates/`)
 
-- `cover.md`: Custom book cover design
-- `separator.md`: Separator HTML between articles
-- `introduction.md`: Book introduction content
-- `conclusion.md`: Book conclusion content
-- `reflection.md.template`: Template for reflection entries
+- `cover.md`: Front cover design with title, subtitle, and author
+- `back_cover.md`: Back cover design (optional)
+- `introduction.md`: Introduction chapter
+- `conclusion.md`: Conclusion chapter
+- `separator.md`: Separator HTML/Markdown between articles
+- `reflection.md.template`: Template for article reflections
 
-### Styles (`styles/`)
+Each template supports custom CSS classes defined in `styles/style.css` for consistent styling.
 
-- `style.css`: Custom CSS styling for HTML/PDF output
+### CSS Styling (`styles/style.css`)
+
+The stylesheet provides custom classes for:
+- Cover layouts (`cover-container`, `cover-title`, etc.)
+- Back cover layouts (`back-cover-container`, etc.)
+- Introduction/conclusion styles
+- Article and reflection formatting
+- Code block and blockquote styling
+- Image sizing and placement
+- PDF-specific page layouts and margins
+
+## Generated Files
+
+### `articles.csv` Format
+
+**Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
+
+After `make` is executed, `articles.csv` is generated with the following format:
+
+```csv
+number,link,pub_date,status,title,filename
+0000,https://note.com/user,"Sat, 01 Feb 2025 09:18:23 +0900",info,サイト情報,0000_Channel_Info.md
+0001,https://note.com/user/n/xxx,2023-09-13 00:37,publish,Title,0001_Title.md
+```
+
+Fields:
+- `number`: Unique article number
+- `link`: Original article URL
+- `pub_date`: Publication date
+- `status`: Publication status (`publish`, `draft`, etc.)
+- `title`: Article title
+- `filename`: Corresponding Markdown file
 
 ## Usage
 
 ### Basic Usage
+
+Generate markdown files from WXR:
+
+```bash
+make articles
+```
+
+Generate QR codes:
+
+```bash
+make qr
+```
+
+QR codes will be saved in the `qrcodes/` directory. Each file corresponds to an article's assigned filename.
+
+Merge all content:
+
+```bash
+make merge
+```
 
 Generate PDF output:
 
@@ -191,15 +227,6 @@ Generate both formats:
 make all
 ```
 
-### Generating QR Codes
-
-To generate QR codes for all articles:
-
-```bash
-make qr
-```
-
-QR codes will be saved in the `qrcodes/` directory. Each file corresponds to an article's assigned filename.
 
 ### Filtering Articles by Status
 
@@ -207,7 +234,7 @@ By default, only **publish** articles are processed (`FILTER_STATUS=publish`).
 To include **draft** articles, run:
 
 ```bash
-make FILTER_STATUS=draft wxr_to_md
+make FILTER_STATUS=draft articles
 ```
 
 To include both **publish** and **draft** articles:

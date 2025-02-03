@@ -10,6 +10,7 @@ for example in \
     config/pdf_options.yaml.example \
     styles/style.css.example \
     templates/cover.md.example \
+    templates/back_cover.md.example \
     templates/introduction.md.example \
     templates/conclusion.md.example \
     templates/separator.md.example \

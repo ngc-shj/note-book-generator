@@ -131,7 +131,7 @@ def parse_wxr_to_markdown(wxr_file, output_dir, allowed_statuses):
         out_path = os.path.join(output_dir, filename)
 
         with open(out_path, 'w', encoding='utf-8') as md:
-            md.write(f"# Title: {title}\n\n")
+            md.write(f"# {title}\n\n")
             md.write(f"**公開日**: {pub_date}\n\n")
             md.write(content_md.strip() + "\n\n")
 
