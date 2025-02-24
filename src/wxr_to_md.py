@@ -16,20 +16,32 @@ from email.utils import parsedate_to_datetime
 
 def detect_code_language(code_content: str) -> str:
     """コードの内容から言語を判定する"""
-    python_keywords = [">>> ", "def ", "import ", "from ", "class ", "else:", "try:", "except:", "print(", "return "]
-    bash_keywords = ["$ ", "pip", "ls", "cat", "grep", "echo", "cd", "sudo", "chmod", "apt", "yum", "brew",
-                     "python", "python3", "modular install", "curl", "wget"]
+    python_keywords = [">>> ", "def ", "import ", "from ", "class ", "else:", "try:",
+                       "except:", "print(", "return ", "LLM(",  "chat_history",
+                       "generation_params", "Llama(", "hf_hub_download("
+                       ]
+    bash_keywords = ["$ ", "pip ", "ls ", "cat ", "grep ", "echo ", "cd ", "mkdir ",
+                     "pwd", "sudo ", "chmod ", "apt ", "yum ", "brew ","python ",
+                     "python3 ", "modular install", "curl ", "wget ", "unzip ",
+                     "cmake ", "bin/main", "git ", "wc ", "export ", "xargs ",
+                     "find ", "tar "
+                     ]
+    text_keywords = ["INFO"]
 
-    content_lower = code_content.lower()
+    # text判定
+    for keyword in text_keywords:
+        if keyword in code_content:
+            return "text"
+
+    # bash判定
+    for keyword in bash_keywords:
+        if keyword in code_content:
+            return "bash"
 
     # Python判定
     for keyword in python_keywords:
-        if keyword.lower() in content_lower:
+        if keyword in code_content:
             return "python"
-    # Bash判定
-    for keyword in bash_keywords:
-        if keyword.lower() in content_lower:
-            return "bash"
     # 見つからなければ text
     return "text"
 
@@ -309,6 +321,8 @@ def bs_node_to_md(node, level=0, base_path=".") -> str:
     elif tname == "img":
         src = node.get("src", "")
         alt = node.get("alt", "")
+        width = node.get("width", "")
+        height = node.get("height", "")
         # /assets/ → 相対パスへ置換
         if src.startswith("/assets/"):
             src = f"./{os.path.join(base_path, src.lstrip('/'))}"
@@ -340,17 +354,18 @@ def bs_node_to_md(node, level=0, base_path=".") -> str:
         for c in node.children:
             child_md = bs_node_to_md(c, level, base_path)
             for ln in child_md.split("\n"):
-                if ln:
-                    ln = ln.replace("<", "&lt;")
-                    ln = ln.replace(">", "&gt;")
-                    ln = f"\\{ln}" if re.match(r'^#+ ', ln) else ln
-                    ln = f"\\{ln}" if re.match(r'^---', ln) else ln
-                    ln = ln.replace("`", "\\`")
-                    ln = ln.replace("[", "\\[")
-                    ln = ln.replace("]", "\\]")
-                    block_lines.append(f"> {ln}")
+                #if ln:
+                #    ln = ln.replace("<", "&lt;")
+                #    ln = ln.replace(">", "&gt;")
+                #    ln = f"\\{ln}" if re.match(r'^#+ ', ln) else ln
+                #    ln = f"\\{ln}" if re.match(r'^---', ln) else ln
+                #    ln = ln.replace("`", "\\`")
+                #    ln = ln.replace("[", "\\[")
+                #    ln = ln.replace("]", "\\]")
+                #    block_lines.append(f"> {ln}")
                 #else:
                 #    block_lines.append(">")
+                block_lines.append(f"> `{ln}`")
         return "\n".join(block_lines)
 
     # コード(インライン/ブロック)

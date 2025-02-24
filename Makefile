@@ -1,5 +1,5 @@
 # Define phony targets (non-file targets)
-.PHONY: all html pdf clean reflections qr merge
+.PHONY: all articles html pdf clean reflections qr merge clean-outputs clean-reflections
 
 # Project structure
 SRC_DIR     := src
@@ -44,32 +44,41 @@ MD_TO_PDF   := md-to-pdf
 FILTER_STATUS := publish
 
 # Default target
-all: $(ARTICLES_DIR) qr merge html pdf 
+all: articles qr merge html pdf 
 
 # Generate markdown files from WXR
-$(ARTICLES_DIR): $(WXR_TO_MD) $(INPUT_XML)
-	rm -f $(OUTPUT_MD)
-	mkdir -p $@
-	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $@ --status $(FILTER_STATUS)
-	touch $@
+articles: $(ARTICLES_DIR)/articles.csv
+
+$(ARTICLES_DIR)/articles.csv: $(WXR_TO_MD) $(INPUT_XML)
+	#rm -f $(OUTPUT_MD)
+	mkdir -p $(ARTICLES_DIR)
+	$(PYTHON) $(WXR_TO_MD) $(INPUT_XML) $(ARTICLES_DIR) --status $(FILTER_STATUS)
+	touch $(ARTICLES_DIR)
 
 # Generate QR codes
-qr: $(ARTICLES_DIR)/articles.csv
-	@mkdir -p $(QR_DIR)
+qr: $(QR_DIR)
+
+$(QR_DIR): $(ARTICLES_DIR)/articles.csv
+	mkdir -p $(QR_DIR)
 	$(PYTHON) $(QR_GENERATOR) --csv $< --output-dir $(QR_DIR)
-	touch $(QR_DIR)
+	touch $@
 
 # Optional reflections generation
-reflections: $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
+reflections: $(REFLECTIONS_DIR)
+
+$(REFLECTIONS_DIR): $(ARTICLES_DIR)/articles.csv $(REFLECTION_TEMPLATE)
 	$(PYTHON) $(REFLECTION_GENERATOR) $< \
 		--template $(REFLECTION_TEMPLATE) \
 		--output-dir $(REFLECTIONS_DIR) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST))
 	touch $(ARTICLES_DIR)
+	touch $@
 
 # Merge markdown files
-merge: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(BACK_COVER_HTML) $(SEPARATOR) $(INTRO_MD) $(OUTRO_MD)
+merge: $(OUTPUT_MD)
+
+$(OUTPUT_MD): $(MD_MERGER) $(ARTICLES_DIR)/articles.csv $(PDF_CONFIG) $(COVER_HTML) $(BACK_COVER_HTML) $(SEPARATOR) $(INTRO_MD) $(OUTRO_MD)
 	$(PYTHON) $(MD_MERGER) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST)) \
@@ -84,11 +93,15 @@ merge: $(MD_MERGER) $(ARTICLES_DIR) $(PDF_CONFIG) $(COVER_HTML) $(BACK_COVER_HTM
 		$(ARTICLES_DIR)
 
 # Generate HTML
-html: $(OUTPUT_MD) $(STYLE_CSS)
+html: $(OUTPUT_HTML)
+
+$(OUTPUT_HTML): $(OUTPUT_MD) $(STYLE_CSS)
 	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $< --as-html
 
 # Generate PDF
-pdf: $(OUTPUT_MD) $(STYLE_CSS)
+pdf: $(OUTPUT_PDF)
+
+$(OUTPUT_PDF): $(OUTPUT_MD) $(STYLE_CSS)
 	$(MD_TO_PDF) --stylesheet $(STYLE_CSS) $<
 
 # Clean targets
