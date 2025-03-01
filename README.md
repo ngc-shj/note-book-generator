@@ -58,14 +58,16 @@ cd note-book-generator
    - `config/pdf_options.yaml` - PDF変換のオプション設定
 3. テンプレートファイルを編集します
    - `templates/cover.md` - 表紙のデザイン
-   - `templates/toc.md` - 目次のテンプレート（通常は自動生成されます）
    - `templates/introduction.md` - 序論のテンプレート
    - `templates/conclusion.md` - 結論のテンプレート
    - `templates/back_cover.md` - 裏表紙のデザイン
    - `templates/separator.md` - 記事間のセパレータ
    - `templates/reflection.md.template` - リフレクションのテンプレート
 4. CSSスタイルを編集します（必要に応じて）
-   - `styles/style.css` - PDFのスタイル定義
+   - `styles/style-base.css` - 基本的なスタイル定義
+   - `styles/cover-style.css` - 表紙、裏表紙のスタイル定義
+   - `styles/frontmatter-style.css` - 前付け（目次）のスタイル定義
+   - `styles/mainmatter-style.css` - 序論、本文、結論のスタイル定義
 
 ### Makefileの使用
 
