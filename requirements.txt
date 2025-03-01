@@ -3,3 +3,4 @@ PyYaml
 qrcodes
 pandas
 pillow
+PyPDF2

@@ -1,278 +1,206 @@
-# note-book-generator
+# Note Book Generator
 
-Convert note.com articles exported in WordPress Extended RSS (WXR) format into PDF/HTML books with customizable formatting, reflections, and QR codes.
+ブログ記事や技術メモをPDF形式の電子書籍に変換するためのツールキットです。WordPress Export (WXR) ファイルから記事を抽出し、整形されたPDF書籍を生成します。
 
-## Features
+## 概要
 
-- Converts WXR exports to clean Markdown format
-- Generates both PDF and HTML outputs
-- Supports custom book cover and article separators
-- Optional introduction and conclusion sections
-- Optional reflection sections for each article
-- Configurable article inclusion/exclusion
-- Preserves code blocks with syntax highlighting
-- Maintains image references and captions
-- Customizable PDF formatting (page size, margins, headers/footers)
-- Generates QR codes for article URLs
+Note Book Generator は、以下のような機能を提供します：
 
-## Requirements
+- WordPress エクスポート (WXR) ファイルからMarkdownへの変換
+- 記事の選択的なフィルタリング（含める/除外する記事の指定）
+- 目次 (TOC) の自動生成
+- コードブロックの言語検出と行番号付与
+- QRコードの自動生成（記事のオリジナルURLへのリンク用）
+- 表紙、前付け、本文、あとがき、裏表紙などの構造化されたPDF生成
+- 記事ごとのリフレクションの統合機能
 
-- Python 3.8+
-- Node.js 12+ (for md-to-pdf)
-- Required Python packages:
-  - bs4 (BeautifulSoup4)
-  - PyYAML
-  - qrcode
-  - pandas
-  - pillow
+## インストール方法
 
-**Note**: Before using the generator, edit `Makefile` to set the `INPUT_XML` variable to the path of your WXR export file:
+### 前提条件
 
-```makefile
-INPUT_XML := $(INPUT_DIR)/your-wxr-export.xml
-```
+- Python 3.7以上
+- Node.js と npm（md-to-pdfのインストールに必要）
 
-## Installation
-
-1. Clone the repository:
+### 依存パッケージのインストール
 
 ```bash
-git clone https://github.com/your-username/note-book-generator.git
-cd note-book-generator
-```
-
-2. Install Python dependencies:
-
-```bash
+# Python 依存パッケージのインストール
 pip install -r requirements.txt
-```
 
-3. Install md-to-pdf:
-
-```bash
+# md-to-pdfのインストール
 npm install -g md-to-pdf
 ```
 
-4. Initialize project structure and copy configuration templates:
+### リポジトリのクローン
 
 ```bash
+git clone https://github.com/ngc-shj/note-book-generator.git
+cd note-book-generator
+```
+
+### 初期設定
+
+```bash
+# 初期設定スクリプトの実行
 ./init.sh
 ```
 
-This script will:
+このスクリプトは必要なディレクトリを作成し、設定ファイルのテンプレートをコピーします。
 
-- Create necessary directories (`config`, `templates`, `styles`, `input`, `qrcodes`)
-- Copy example configuration files to their proper locations:
-  - `config/exclude_articles.txt`
-  - `config/include_articles.txt`
-  - `config/pdf_options.yaml`
-  - `templates/cover.md`
-  - `templates/back_cover.md`
-  - `templates/introduction.md`
-  - `templates/conclusion.md`
-  - `templates/separator.md`
-  - `templates/reflection.md.template`
-  - `styles/style.css`
+## 使い方
 
-5. Place note.com export files:
-   - From note.com, export your articles in WordPress Extended RSS (WXR) format
-   - Extract downloaded zip file (format: `[hash]_1.zip`)
-   - Move contents to the `input` directory:
+### 基本的な使い方
 
-     ```bash
-     mv note-ngc_shj-1.xml input/
-     mv assets input/
-     ```
+1. WordPressのエクスポートファイル（XML）を`input`ディレクトリに配置します
+2. 必要に応じて設定ファイルを編集します
+   - `config/exclude_articles.txt` - 除外する記事番号のリスト
+   - `config/include_articles.txt` - 含める記事番号のリスト（指定すると、これだけが含まれます）
+   - `config/pdf_options.yaml` - PDF変換のオプション設定
+3. テンプレートファイルを編集します
+   - `templates/cover.md` - 表紙のデザイン
+   - `templates/toc.md` - 目次のテンプレート（通常は自動生成されます）
+   - `templates/introduction.md` - 序論のテンプレート
+   - `templates/conclusion.md` - 結論のテンプレート
+   - `templates/back_cover.md` - 裏表紙のデザイン
+   - `templates/separator.md` - 記事間のセパレータ
+   - `templates/reflection.md.template` - リフレクションのテンプレート
+4. CSSスタイルを編集します（必要に応じて）
+   - `styles/style.css` - PDFのスタイル定義
 
-   The `assets` directory contains your article images and media files.
+### Makefileの使用
 
-## Project Structure
+プロジェクトは `make` コマンドを使用して実行できます：
 
-```text
+```bash
+# 全工程を実行してPDFを生成
+make
+
+# 特定のタスクだけを実行
+make articles        # WXRからMarkdownへの変換
+make qrcodes         # QRコードの生成
+make reflections     # リフレクションの生成
+make cover           # 表紙の生成
+make frontmatter     # 前付け（目次）の生成
+make mainmatter      # 序文＋本文＋結論の生成
+make back-cover      # 裏表紙の生成
+make pdf             # 最終PDFの生成
+
+# クリーンアップ
+make clean           # 全ての生成ファイルを削除
+make clean-articles  # 生成された記事ファイルのみ削除
+make clean-outputs   # 出力ディレクトリのみ削除
+```
+
+### 設定項目の詳細
+
+#### 記事の選択
+
+`config/include_articles.txt` と `config/exclude_articles.txt` ファイルを使用して、含めたい/除外したい記事を指定できます。各ファイルには、記事番号を1行に1つずつ記述します。
+
+#### PDF設定
+
+`config/pdf_options.yaml` ファイルでPDFの基本設定を行います：
+
+```yaml
+format: A5                 # PDFサイズ（A5, A4など）
+displayHeaderFooter: true  # ヘッダーとフッターを表示するかどうか
+printBackground: true      # 背景色を印刷するかどうか
+outlineStyle: auto         # アウトラインのスタイル
+outlineOffset: 0           # アウトラインのオフセット
+outlineMaxLevel: 3         # アウトラインの最大レベル
+```
+
+## ディレクトリ構造
+
+```
 note-book-generator/
-├── config/                 # Configuration files
-│   ├── exclude_articles.txt
-│   ├── include_articles.txt
-│   └── pdf_options.yaml
-├── templates/             # Markdown templates
-│   ├── cover.md          # Book front cover
-│   ├── back_cover.md     # Book back cover
-│   ├── introduction.md   # Introduction chapter
-│   ├── conclusion.md     # Conclusion chapter
-│   ├── separator.md      # Separator between articles
-│   └── reflection.md.template
-├── styles/                # Stylesheets
-│   └── style.css
-├── src/                   # Source code
-│   ├── wxr_to_md.py
-│   ├── merge_md_files.py
-│   ├── generate_reflections.py
-│   ├── generate_qr_codes.py
-├── articles/             # Generated article files
-├── reflections/         # Generated reflection templates
-├── qrcodes/             # Generated QR codes
-└── input/               # Input files (note.com WXR exports)
+├── config/                  # 設定ファイル
+│   ├── exclude_articles.txt # 除外する記事番号
+│   ├── include_articles.txt # 含める記事番号
+│   ├── pdf_cover_options.yaml # PDF変換の設定（表紙、裏表紙）
+│   ├── pdf_frontmatter_options.yaml # PDF変換の設定（目次）
+│   └── pdf_mainmatter_options.yaml  # PDF変換の設定（序文＋本文＋結論）
+├── input/                   # 入力ファイル（WXRファイルなど）
+├── styles/                  # CSSスタイル定義
+│   ├── style-base.css       # スタイルシート
+│   ├── cover-style.css      # 表紙、裏表紙のスタイルシート
+│   ├── frontmatter-style.css # 前付け（目次）のスタイルシート
+│   └── mainmatter-style.css # 序文＋本文＋結論のスタイルシート
+├── templates/               # テンプレートファイル
+│   ├── cover.md             # 表紙
+│   ├── introduction.md      # 序論
+│   ├── conclusion.md        # 結論
+│   ├── back_cover.md        # 裏表紙
+│   ├── separator.md         # 記事間のセパレータ
+│   └── reflection.md.template # リフレクションのテンプレート
+├── src/                     # ソースコード
+│   ├── wxr_to_md.py         # WXRからMarkdownへの変換
+│   ├── merge_md_files.py    # Markdownファイルの結合
+│   ├── generate_qr_codes.py # QRコードの生成
+│   ├── generate_reflections.py # リフレクションの生成
+│   ├── generate_toc.py      # 目次の生成
+│   └── merge_pdf_files.py   # PDFファイルの結合
+├── articles/                # 生成された記事
+├── qrcodes/                 # 生成されたQRコード
+├── reflections/             # 生成されたリフレクション
+├── output/                  # 出力ディレクトリ
+│   ├── md/                  # 中間Markdownファイル
+│   ├── md/                  # 中間PDFファイル
+│   └── note-book.pdf        # 生成されたPDFファイル
+├── Makefile                 # makeコマンド定義
+├── init.sh                  # 初期設定スクリプト
+└── README.md                # このファイル
 ```
 
-## Configuration
+## カスタマイズ
 
-### Article Selection (`config/`)
+### スタイルのカスタマイズ
 
-Both exclude and include lists are optional:
+`styles/style.css` ファイルを編集して、PDF出力のスタイルをカスタマイズできます。主なスタイル定義には以下が含まれます：
 
-- If neither is specified, all articles will be included in the output
-- `exclude_articles.txt`: Optional list of article numbers to exclude
-- `include_articles.txt`: Optional list of specific articles to include
-- Format: One article number per line
+- 本文、見出し、リンク、画像などの基本スタイル
+- 表紙、裏表紙、目次、章区切りなどの特別なセクションのスタイル
+- ページフォーマットやページブレークの制御
 
-To include only specific articles, list their numbers in `include_articles.txt`:
+### テンプレートのカスタマイズ
 
-```text
-1
-2
-```
+各種テンプレートファイルを編集して、書籍の各部分をカスタマイズできます：
 
-### PDF Options (`config/pdf_options.yaml`)
+- `templates/cover.md` - 表紙のデザインとコンテンツ
+- `templates/back_cover.md` - 裏表紙のデザインとコンテンツ
+- `templates/introduction.md` - 序論のコンテンツ
+- `templates/conclusion.md` - 結論のコンテンツ
+- `templates/separator.md` - 記事間のセパレータのデザイン
+- `templates/reflection.md.template` - リフレクションのテンプレート（変数置換が利用可能）
 
-Controls PDF output formatting:
+## トラブルシューティング
 
-- Page size and margins
-- Header/footer templates
-- Custom styling
-- Font settings
+### よくある問題
 
-### Templates (`templates/`)
+- **エラー：md-to-pdfコマンドが見つかりません**
+  - Node.jsとnpmが正しくインストールされているか確認してください
+  - `npm install -g md-to-pdf` を実行してグローバルにインストールしてください
 
-- `cover.md`: Front cover design with title, subtitle, and author
-- `back_cover.md`: Back cover design (optional)
-- `introduction.md`: Introduction chapter
-- `conclusion.md`: Conclusion chapter
-- `separator.md`: Separator HTML/Markdown between articles
-- `reflection.md.template`: Template for article reflections
+- **QRコードが生成されない**
+  - `qrcode` Pythonパッケージがインストールされているか確認してください
+  - 記事のリンクが有効かどうか確認してください
 
-Each template supports custom CSS classes defined in `styles/style.css` for consistent styling.
+- **PDFの文字化けや表示の問題**
+  - フォントが正しく設定されているか確認してください
+  - CSSのスタイル定義を見直してください
 
-### CSS Styling (`styles/style.css`)
+## ライセンス
 
-The stylesheet provides custom classes for:
-- Cover layouts (`cover-container`, `cover-title`, etc.)
-- Back cover layouts (`back-cover-container`, etc.)
-- Introduction/conclusion styles
-- Article and reflection formatting
-- Code block and blockquote styling
-- Image sizing and placement
-- PDF-specific page layouts and margins
+このプロジェクトはMITライセンスの下で提供されています。詳細は[LICENSE](LICENSE)しファイルを参照してください。
 
-## Generated Files
+## 貢献
 
-### `articles.csv` Format
+バグレポートや機能リクエストは、GitHubのIssuesページで報告してください。Pull Requestsも歓迎します。
 
-**Note**: `articles/articles.csv` is generated after running `make` for the first time, listing all articles found in your WXR file with their assigned numbers.
+## クレジット
 
-After `make` is executed, `articles.csv` is generated with the following format:
-
-```csv
-number,link,pub_date,status,title,filename
-0000,https://note.com/user,"Sat, 01 Feb 2025 09:18:23 +0900",info,サイト情報,0000_Channel_Info.md
-0001,https://note.com/user/n/xxx,2023-09-13 00:37,publish,Title,0001_Title.md
-```
-
-Fields:
-- `number`: Unique article number
-- `link`: Original article URL
-- `pub_date`: Publication date
-- `status`: Publication status (`publish`, `draft`, etc.)
-- `title`: Article title
-- `filename`: Corresponding Markdown file
-
-## Usage
-
-### Basic Usage
-
-Generate markdown files from WXR:
-
-```bash
-make articles
-```
-
-Generate QR codes:
-
-```bash
-make qr
-```
-
-QR codes will be saved in the `qrcodes/` directory. Each file corresponds to an article's assigned filename.
-
-Merge all content:
-
-```bash
-make merge
-```
-
-Generate PDF output:
-
-```bash
-make pdf
-```
-
-Generate HTML output:
-
-```bash
-make html
-```
-
-Generate both formats:
-
-```bash
-make all
-```
-
-
-### Filtering Articles by Status
-
-By default, only **publish** articles are processed (`FILTER_STATUS=publish`).  
-To include **draft** articles, run:
-
-```bash
-make FILTER_STATUS=draft articles
-```
-
-To include both **publish** and **draft** articles:
-
-```bash
-make FILTER_STATUS="publish,draft" wxr_to_md
-```
-
-### Working with Reflections
-
-1. Generate reflection templates:
-
-```bash
-make reflections
-```
-
-2. Edit generated templates in `reflections/` directory
-
-3. Include reflections in final output:
-
-```bash
-make pdf REFLECTIONS_DIR=reflections
-```
-
-### Cleaning Up
-
-Remove generated files:
-
-```bash
-make clean
-```
-
-Remove only reflection files:
-
-```bash
-make clean-reflections
-```
-
-## License
-
-Apache License 2.0 - See [LICENSE](LICENSE) for details
+- WordPressエクスポート機能
+- BeautifulSoup4 - HTML解析
+- PyPDF2 - PDF操作
+- md-to-pdf - MarkdownからPDFへの変換
+- qrcode - QRコード生成

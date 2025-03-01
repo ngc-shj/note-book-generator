@@ -135,7 +135,7 @@ $(OUTPUT_BACK_COVER): $(BACK_COVER_HTML) $(MD_MERGER)
 		--back-cover $< \
 		--output $@
 
-# 前付けの生成（目次）
+# Front-matter
 frontmatter: $(FRONTMATTER_PDF)
 
 $(FRONTMATTER_PDF): $(OUTPUT_FRONTMATTER) $(STYLE_FRONT) $(STYLE_BASE)
@@ -153,7 +153,7 @@ $(OUTPUT_FRONTMATTER): $(OUTPUT_TOC) $(PDF_FRONTMATTER_CONFIG) $(MD_MERGER)
 		--toc $(OUTPUT_TOC) \
 		--output $@
 
-# 目次
+# TOC
 toc: $(OUTPUT_TOC)
 
 $(OUTPUT_TOC): $(MAINMATTER_PDF)
@@ -162,7 +162,7 @@ $(OUTPUT_TOC): $(MAINMATTER_PDF)
 		--pdf-file $< \
 		--output $@
 
-# 本文の生成（序論+本文+結論）
+# Main-matter = introduction + articles + conclusion
 mainmatter: $(MAINMATTER_PDF)
 
 $(MAINMATTER_PDF): $(OUTPUT_MAINMATTER) $(STYLE_MAIN) $(STYLE_BASE)
