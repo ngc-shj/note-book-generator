@@ -1,5 +1,5 @@
 # Define phony targets (non-file targets)
-.PHONY: all articles cover frontmatter mainmatter back-cover pdf toc reflections qrcodes clean clean-articles clean-reflections clean-qrcodes clean-outputs
+.PHONY: all articles cover frontmatter mainmatter back-cover book toc reflections qrcodes clean clean-articles clean-reflections clean-qrcodes clean-outputs
 
 # Project structure
 SRC_DIR     := src
@@ -18,9 +18,7 @@ OUTPUT_PDF_DIR:= $(OUTPUT_DIR)/pdf
 INPUT_XML   := $(INPUT_DIR)/note-ngc_shj-1.xml
 EXCLUDE_LIST:= $(CONFIG_DIR)/exclude_articles.txt
 INCLUDE_LIST:= $(CONFIG_DIR)/include_articles.txt
-PDF_COVER_CONFIG := $(CONFIG_DIR)/pdf_cover_options.yaml
-PDF_FRONTMATTER_CONFIG := $(CONFIG_DIR)/pdf_frontmatter_options.yaml
-PDF_MAINMATTER_CONFIG := $(CONFIG_DIR)/pdf_mainmatter_options.yaml
+PDF_CONFIG  := $(CONFIG_DIR)/pdf_options.yaml
 COVER_HTML  := $(TEMPLATE_DIR)/cover.md
 BACK_COVER_HTML  := $(TEMPLATE_DIR)/back_cover.md
 TOC_MD      := $(TEMPLATE_DIR)/toc.md
@@ -110,10 +108,10 @@ $(COVER_PDF): $(OUTPUT_COVER) $(STYLE_COVER) $(STYLE_BASE)
 	mkdir -p $(OUTPUT_PDF_DIR)
 	mv $(OUTPUT_COVER:.md=.pdf) $@
 
-$(OUTPUT_COVER): $(COVER_HTML) $(MD_MERGER)
+$(OUTPUT_COVER): $(COVER_HTML) $(PDF_CONFIG) $(MD_MERGER)
 	mkdir -p $(OUTPUT_MD_DIR)
 	$(PYTHON) $(MD_MERGER) \
-		--pdf-options $(PDF_COVER_CONFIG) \
+		--pdf-options $(PDF_CONFIG) \
 		--cover-design $< \
 		--output $@
 
@@ -128,10 +126,10 @@ $(BACK_COVER_PDF): $(OUTPUT_BACK_COVER) $(STYLE_COVER) $(STYLE_BASE)
 	mkdir -p $(OUTPUT_PDF_DIR)
 	mv $(OUTPUT_BACK_COVER:.md=.pdf) $@
 
-$(OUTPUT_BACK_COVER): $(BACK_COVER_HTML) $(MD_MERGER)
+$(OUTPUT_BACK_COVER): $(BACK_COVER_HTML) $(PDF_CONFIG) $(MD_MERGER)
 	mkdir -p $(OUTPUT_MD_DIR)
 	$(PYTHON) $(MD_MERGER) \
-		--pdf-options $(PDF_COVER_CONFIG) \
+		--pdf-options $(PDF_CONFIG) \
 		--back-cover $< \
 		--output $@
 
@@ -146,9 +144,9 @@ $(FRONTMATTER_PDF): $(OUTPUT_FRONTMATTER) $(STYLE_FRONT) $(STYLE_BASE)
 	mkdir -p $(OUTPUT_PDF_DIR)
 	mv $(OUTPUT_FRONTMATTER:.md=.pdf) $@
 
-$(OUTPUT_FRONTMATTER): $(OUTPUT_TOC) $(PDF_FRONTMATTER_CONFIG) $(MD_MERGER)
+$(OUTPUT_FRONTMATTER): $(OUTPUT_TOC) $(PDF_CONFIG) $(MD_MERGER)
 	$(PYTHON) $(MD_MERGER) \
-		--pdf-options $(PDF_FRONTMATTER_CONFIG) \
+		--pdf-options $(PDF_CONFIG) \
 		--separator $(SEPARATOR) \
 		--toc $(OUTPUT_TOC) \
 		--output $@
@@ -173,10 +171,10 @@ $(MAINMATTER_PDF): $(OUTPUT_MAINMATTER) $(STYLE_MAIN) $(STYLE_BASE)
 	mkdir -p $(OUTPUT_PDF_DIR)
 	mv $(OUTPUT_MAINMATTER:.md=.pdf) $@
 
-$(OUTPUT_MAINMATTER): $(INTRO_MD) $(CONCLUSION_MD) $(PDF_MAINMATTER_CONFIG) $(MD_MERGER)
+$(OUTPUT_MAINMATTER): $(INTRO_MD) $(CONCLUSION_MD) $(PDF_CONFIG) $(MD_MERGER)
 	mkdir -p $(OUTPUT_MD_DIR)
 	$(PYTHON) $(MD_MERGER) \
-		--pdf-options $(PDF_MAINMATTER_CONFIG) \
+		--pdf-options $(PDF_CONFIG) \
 		$(if $(wildcard $(EXCLUDE_LIST)),--exclude-file $(EXCLUDE_LIST)) \
 		$(if $(wildcard $(INCLUDE_LIST)),--include-file $(INCLUDE_LIST)) \
 		$(if $(wildcard $(REFLECTIONS_DIR)),--reflections-dir $(REFLECTIONS_DIR)) \
@@ -187,7 +185,7 @@ $(OUTPUT_MAINMATTER): $(INTRO_MD) $(CONCLUSION_MD) $(PDF_MAINMATTER_CONFIG) $(MD
 		--output $@
 
 # Merge PDF files
-pdf: $(OUTPUT_PDF)
+book: $(OUTPUT_PDF)
 
 $(OUTPUT_PDF): $(COVER_PDF) $(FRONTMATTER_PDF) $(MAINMATTER_PDF) $(BACK_COVER_PDF) $(PDF_MERGER)
 	$(PYTHON) $(PDF_MERGER) \

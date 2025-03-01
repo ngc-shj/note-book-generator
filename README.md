@@ -81,9 +81,9 @@ make qrcodes         # QRコードの生成
 make reflections     # リフレクションの生成
 make cover           # 表紙の生成
 make frontmatter     # 前付け（目次）の生成
-make mainmatter      # 序文＋本文＋結論の生成
+make mainmatter      # 序論＋本文＋結論の生成
 make back-cover      # 裏表紙の生成
-make pdf             # 最終PDFの生成
+make book            # 最終PDFの生成
 
 # クリーンアップ
 make clean           # 全ての生成ファイルを削除
@@ -117,15 +117,13 @@ note-book-generator/
 ├── config/                  # 設定ファイル
 │   ├── exclude_articles.txt # 除外する記事番号
 │   ├── include_articles.txt # 含める記事番号
-│   ├── pdf_cover_options.yaml # PDF変換の設定（表紙、裏表紙）
-│   ├── pdf_frontmatter_options.yaml # PDF変換の設定（目次）
-│   └── pdf_mainmatter_options.yaml  # PDF変換の設定（序文＋本文＋結論）
+│   └── pdf_options.yaml     # PDF変換の設定
 ├── input/                   # 入力ファイル（WXRファイルなど）
 ├── styles/                  # CSSスタイル定義
 │   ├── style-base.css       # スタイルシート
 │   ├── cover-style.css      # 表紙、裏表紙のスタイルシート
 │   ├── frontmatter-style.css # 前付け（目次）のスタイルシート
-│   └── mainmatter-style.css # 序文＋本文＋結論のスタイルシート
+│   └── mainmatter-style.css # 序論＋本文＋結論のスタイルシート
 ├── templates/               # テンプレートファイル
 │   ├── cover.md             # 表紙
 │   ├── introduction.md      # 序論
@@ -156,7 +154,14 @@ note-book-generator/
 
 ### スタイルのカスタマイズ
 
-`styles/style.css` ファイルを編集して、PDF出力のスタイルをカスタマイズできます。主なスタイル定義には以下が含まれます：
+ファイルを編集して、PDF出力のスタイルをカスタマイズできます：
+
+- `styles/style-base.css` - 基本的なスタイル定義
+- `styles/cover-style.css` - 表紙、裏表紙のスタイル定義
+- `styles/frontmatter-style.css` - 前付け（目次）のスタイル定義
+- `styles/mainmatter-style.css` - 序論、本文、結論のスタイル定義
+
+主なスタイル定義には以下が含まれます：
 
 - 本文、見出し、リンク、画像などの基本スタイル
 - 表紙、裏表紙、目次、章区切りなどの特別なセクションのスタイル

@@ -102,11 +102,11 @@ def merge_md_files(
                             content += f'<div id="article-{article_number}"></div>\n\n'
                             content += input_file.read()
 
-                        #if qr_dir:
-                        #    qr_code_path = os.path.join(qr_dir, f"{md_file.replace('.md', '.png')}")
-                        #    if qr_dir and os.path.exists(qr_code_path):
-                        #        qr_code_md = f"\n![]({qr_code_path})\n"
-                        #        content = content.replace("**公開日**:", qr_code_md + "**公開日**:", 1)
+                        if qr_dir:
+                            qr_code_path = os.path.join(qr_dir, f"{md_file.replace('.md', '.png')}")
+                            if qr_dir and os.path.exists(qr_code_path):
+                                qr_code_md = f"\n![]({qr_code_path})\n"
+                                content = content.replace("**公開日**:", qr_code_md + "**公開日**:", 1)
 
                         if reflections_dir:
                             reflection_path = os.path.join(reflections_dir, f"{article_number}_reflection.md")
