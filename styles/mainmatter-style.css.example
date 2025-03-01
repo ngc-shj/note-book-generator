@@ -1,0 +1,21 @@
+/* 左ページのページ番号設定 */
+@page :left {
+  @bottom-left {
+    content: counter(page);
+    font-size: 0.7em;
+  }
+  @bottom-right {
+    content: '';
+  }
+}
+
+/* 右ページのページ番号設定 */
+@page :right {
+  @bottom-left {
+    content: '';
+  }
+  @bottom-right {
+    content: counter(page);
+    font-size: 0.7em;
+  }
+}

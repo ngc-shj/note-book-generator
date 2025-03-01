@@ -1,0 +1,54 @@
+/* 目次 */
+.toc-container {
+    font-size: 0.8em;
+    width: 100%;
+    margin: 20px 0;
+}
+.toc-title {
+    font-size: 1.0em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.toc-entry {
+    display: flex;
+    align-items: baseline;
+    width: 100%;
+    margin: 5px 0;
+    line-height: 1.3;
+}
+.toc-number {
+    min-width: 2em;
+    text-align: right;
+    margin-right: 0.5em;
+}
+.toc-text {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+.toc-page {
+    min-width: 2em;
+    text-align: right;
+    margin-left: 5px;
+}
+.toc-text::after {
+    content: "";
+    position: absolute;
+    bottom: 0.3em;
+    margin-left: 0.5em;
+    width: 100%;
+    border-bottom: 1px dotted #000;
+}
+.toc-divider {
+    margin: 10px 0;
+    border-top: 1px solid #ccc;
+}
+
+.toc-special {
+    min-width: 2em;
+    margin-right: 0.5em;
+}
+
+.toc-special + .toc-text {
+    font-weight: bold;
+}

@@ -10,19 +10,6 @@ h1::before {
     content: "[" counter(section) "] ";
 }
 
-div.ToC ul {
-  counter-reset: section;
-}
-
-div.ToC li {
-  list-style: none;
-}
-
-div.ToC ul>li:before {
-  counter-increment: section;
-  content: counters(section, '.') '. ';
-}
-
 /* 基本スタイル */
 h1 {
     font-size: 1.6em;
@@ -37,23 +24,23 @@ h3 {
 }
 
 p.figure {
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-style: italic;
     font-weight: bold;
     text-align: center;
 }
 
 p.source {
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-style: italic;
     font-weight: bold;
     text-align: right;
 }
 
 blockquote {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding: 4px 6px;
+    margin-top: 0px;  /* 上のマージンを小さく */
+    margin-bottom: 0px; /* 下のマージンを小さく */
+    padding: 4px 6px; /* 内側の余白を調整 */
     font-size: 0.8em;
     word-break: normal;
     white-space: pre-wrap !important;
@@ -87,6 +74,7 @@ img {
     margin: 0 auto;
     width: auto;
     max-width: 100%;
+    height: auto;
 }
 
 @media (min-width: 320px) {
@@ -95,64 +83,11 @@ img {
     margin: 0 auto;
     width: auto;
     max-width: 40%;
+    height: auto;
   }
 }
 
-/* 表紙用スタイル */
-.cover-container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-.cover-title {
-    font-size: 4.0em;
-    line-height: 1.2em;
-    padding: 64px 0;
-    font-weight: bold;
-}
-
-.cover-subtitle {
-    font-size: 1.6em;
-    line-height: 1.2em;
-    padding: 32px 0;
-}
-
-.cover-author {
-    font-size: 1.8em;
-    font-weight: bold;
-    padding: 32px 0;
-}
-
-.cover-container img {
-    all: unset;
-    margin: 0 auto;
-    width: auto;
-    max-width: 75%;
-    display: block;
-}
-
-/* 裏表紙用スタイル */
-.back-cover-container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    height: 100vh;
-}
-
-.back-cover-message {
-    text-align: left;
-    font-size: 2.0em;
-    font-weight: bold;
-    padding: 32px 0;
-}
-
-/* はじめに、あとがき用スタイル */
+/* はじめに用、あとがき用スタイル */
 .introduction-container,
 .conclusion-container {
     font-size: 1.1em;
@@ -161,7 +96,6 @@ img {
     line-height: 1.6;
 }
 
-/* あとがき用スタイル */
 .conclusion-images {
     all: unset;
     display: flex;
@@ -176,7 +110,17 @@ img {
     height: auto;
 }
 
+/* ページを跨がないようにする */
+.page-break {
+    page-break-before: always; /* 強制的に改ページ */
+}
+  
+.avoid-break {
+    page-break-inside: avoid; /* 要素が途中で分断されるのを防ぐ */
+}
+
 /* PDF用 */
+/* マージン */
 @page {
     margin-top: 12mm;
     margin-bottom: 12mm;

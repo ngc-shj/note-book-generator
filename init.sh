@@ -7,8 +7,13 @@ mkdir -p input config templates styles qrcodes
 for example in \
     config/exclude_articles.txt.example \
     config/include_articles.txt.example \
-    config/pdf_options.yaml.example \
-    styles/style.css.example \
+    config/pdf_cover_options.yaml.example \
+    config/pdf_frontmatter_options.yaml.example \
+    config/pdf_mainmatter_options.yaml.example \
+    styles/cover-style.css.example \
+    styles/frontmatter-style.css.example \
+    styles/mainmatter-style.css.example \
+    styles/style-base.css.example \
     templates/cover.md.example \
     templates/back_cover.md.example \
     templates/introduction.md.example \
