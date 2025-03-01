@@ -65,7 +65,7 @@ FILTER_STATUS := publish
 
 # Default target
 # all: articles qr merge html pdf 
-all: pdf
+all: book
 
 # Generate markdown files from WXR
 articles: $(ARTICLES_DIR)/articles.csv
